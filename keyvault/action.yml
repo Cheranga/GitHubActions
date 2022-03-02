@@ -33,7 +33,7 @@ runs:
           failOnStdErr: false
           deploymentName: ${{ inputs.keyVaultName }}
           resourceGroupName: ${{ inputs.resourceGroupName }}
-          template: '../Deploy/keyvault/template.bicep'
+          template: 'template.bicep'
           parameters: >
              keyVaultName=${{ inputs.keyVaultName }} 
              location=${{ inputs.location }} 
