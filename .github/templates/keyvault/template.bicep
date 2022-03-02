@@ -1,12 +1,7 @@
 param keyVaultName string = ''
 param location string = resourceGroup().location
-param readAccessPrincipalIdList string
 
-var readAccessList = trim(readAccessPrincipalIdList) == ''? [
-  ''
-] : split(trim(readAccessPrincipalIdList), ',')
-
-resource keyVault 'Microsoft.KeyVault/vaults@2021-10-01' = if (length(readAccessList) > 0) {
+resource keyVault 'Microsoft.KeyVault/vaults@2021-10-01' = {
   name: keyVaultName
   location: location
   properties: {
@@ -18,16 +13,5 @@ resource keyVault 'Microsoft.KeyVault/vaults@2021-10-01' = if (length(readAccess
       name: 'standard'
     }     
     tenantId: subscription().tenantId
-    
-    accessPolicies: [for sp in readAccessList:{
-      objectId:sp
-      tenantId:subscription().tenantId
-      permissions:{
-        secrets:[
-          'get'
-          'list'
-        ]
-      }
-    }]    
   }
 }

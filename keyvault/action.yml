@@ -43,6 +43,5 @@ runs:
           parameters: >
              keyVaultName=${{ inputs.keyVaultName }} 
              location=${{ inputs.location }} 
-             readAccessPrincipalIdList=${{ inputs.readAccessPrincipalList }}
 
              
