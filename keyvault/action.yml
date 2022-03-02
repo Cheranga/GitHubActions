@@ -17,9 +17,11 @@ inputs:
   readAccessPrincipalList:
     description: 'The read access service principals'
     required: false 
+    default: ''
   writeAccessPrincipalList:
     description: 'The write access service principals'
     required: false       
+    default: ''
 runs:
   using: 'composite'
   steps:
