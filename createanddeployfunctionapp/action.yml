@@ -11,7 +11,7 @@ inputs:
     default: '6.0.x'  
   packagePath:
     description: 'The path where the published function output will be stored in'
-    required: true
+    required: false
     default: './published'
   resourceGroupName:
     description: 'The name of the resource group'
