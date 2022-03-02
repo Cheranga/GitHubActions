@@ -9,7 +9,7 @@ param planTier string
 
 var sanitizedFuncAppName = '${toLower(replace(funcAppName, '-', ''))}${envName}'
 var sanitizedStorageName = '${toLower(replace(sgName, '-', ''))}${envName}'
-var queue = 'https://${sanitizedStorageName}.queue.core.windows.net'
+var queue = 'https://sg${sanitizedStorageName}.queue.core.windows.net'
 var timeZone = 'AUS Eastern Standard Time'
 
 // Storage Account
@@ -143,7 +143,7 @@ resource stagingSlotAppSettings 'Microsoft.Web/sites/slots/config@2021-02-01'= {
   name: '${sanitizedFuncAppName}/Staging/appsettings'
   properties:{
     CustomerApiKey: 'This is the staging setting'  
-    AzureWebJobsStorage__accountName: sgName
+    AzureWebJobsStorage__accountName: storageAccount.name
     HotelCancellationQueue: 'hotel-cancellations'
     QueueSource__queueServiceUri: queue
     WEBSITE_CONTENTAZUREFILECONNECTIONSTRING: '@Microsoft.KeyVault(SecretUri=https://${keyVault.name}.vault.azure.net/secrets/storageAccountConnectionString/)'
