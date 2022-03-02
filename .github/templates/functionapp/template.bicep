@@ -86,7 +86,28 @@ resource keyVault 'Microsoft.KeyVault/vaults@2021-06-01-preview' = {
       name: 'standard'
     }    
     tenantId: subscription().tenantId
-    accessPolicies: []    
+    accessPolicies: [
+      {
+        tenantId: subscription().tenantId
+        objectId: functionAppProductionSlot.identity.principalId
+        permissions: {
+          secrets: [
+            'get'
+            'list'
+          ]
+        }
+      }
+      {
+        tenantId: subscription().tenantId
+        objectId: functionAppStagingSlot.identity.principalId
+        permissions: {
+          secrets: [
+            'get'
+            'list'
+          ]
+        }
+      }
+    ]  
   }    
 }
 
@@ -113,6 +134,9 @@ resource productionSlotAppSettings 'Microsoft.Web/sites/config@2021-02-01' = {
     FUNCTIONS_EXTENSION_VERSION: '~4'    
     FUNCTIONS_WORKER_RUNTIME: 'dotnet'    
   }
+  dependsOn:[
+    functionAppProductionSlot
+  ]
 }
 
 resource stagingSlotAppSettings 'Microsoft.Web/sites/slots/config@2021-02-01'= {
@@ -130,4 +154,7 @@ resource stagingSlotAppSettings 'Microsoft.Web/sites/slots/config@2021-02-01'= {
     WEBSITE_TIME_ZONE: timeZone
     WEBSITE_ADD_SITENAME_BINDINGS_IN_APPHOST_CONFIG: 1
   }
+  dependsOn:[    
+    functionAppStagingSlot    
+  ]
 }
