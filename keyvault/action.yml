@@ -33,7 +33,7 @@ runs:
           failOnStdErr: false
           deploymentName: ${{ inputs.keyVaultName }}
           resourceGroupName: ${{ inputs.resourceGroupName }}
-          template: ./keyvault/template.bicep
+          template: Cheranga/GitHubActions/keyvault/template.bicep
           parameters: >
              keyVaultName=${{ inputs.keyVaultName }} 
              location=${{ inputs.location }} 
