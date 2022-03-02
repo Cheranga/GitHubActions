@@ -6,6 +6,7 @@ param storageSku string = 'Standard_LRS'
 param storageSkuTier string = 'Standard'
 param planSku string
 param planTier string
+param sharedStorageAccount string
 
 var sanitizedFuncAppName = '${toLower(replace(funcAppName, '-', ''))}${envName}'
 var sanitizedStorageName = '${toLower(replace(sgName, '-', ''))}${envName}'
@@ -157,4 +158,60 @@ resource stagingSlotAppSettings 'Microsoft.Web/sites/slots/config@2021-02-01'= {
   dependsOn:[    
     functionAppStagingSlot    
   ]
+}
+
+// Assigning RBAC
+resource storageBlobDataOwnerDefinition 'Microsoft.Authorization/roleDefinitions@2018-01-01-preview' existing = {
+  scope: subscription()
+  name: 'b7e6dc6d-f1e8-4753-8033-0f276bb0955b'
+}
+
+resource storageBlobDataOwnerProductionAssignment 'Microsoft.Authorization/roleAssignments@2020-04-01-preview' = {
+  name: guid(resourceGroup().id, 'productionSlot', storageBlobDataOwnerDefinition.id)
+  scope:storageAccount
+  properties: {
+    roleDefinitionId: storageBlobDataOwnerDefinition.id
+    principalId: functionAppProductionSlot.identity.principalId
+    principalType: 'ServicePrincipal'
+  }  
+}
+
+resource storageBlobDataOwnerStagingAssignment 'Microsoft.Authorization/roleAssignments@2020-04-01-preview' = {
+  name: guid(resourceGroup().id, 'stagingSlot', storageBlobDataOwnerDefinition.id)
+  scope:storageAccount
+  properties: {
+    roleDefinitionId: storageBlobDataOwnerDefinition.id
+    principalId: functionAppStagingSlot.identity.principalId
+    principalType: 'ServicePrincipal'
+  }  
+}
+
+resource storageQueueDataContributor 'Microsoft.Authorization/roleDefinitions@2018-01-01-preview' existing = {
+  scope: subscription()
+  name: '974c5e8b-45b9-4653-ba55-5f855dd0fb88'
+}
+
+resource sharedStg 'Microsoft.Storage/storageAccounts@2021-02-01' existing = {
+  scope: resourceGroup()  
+  name: sharedStorageAccount
+}
+
+resource storageQueueDataContributorProductionAssignment 'Microsoft.Authorization/roleAssignments@2020-04-01-preview' = {
+  name: guid(resourceGroup().id, 'productionSlot', storageQueueDataContributor.id)  
+  scope:sharedStg
+  properties: {
+    roleDefinitionId: storageQueueDataContributor.id
+    principalId: functionAppProductionSlot.identity.principalId
+    principalType: 'ServicePrincipal'
+  }  
+}
+
+resource storageQueueDataContributorStagingAssignment 'Microsoft.Authorization/roleAssignments@2020-04-01-preview' = {
+  name: guid(resourceGroup().id, 'stagingSlot', storageQueueDataContributor.id)
+  scope:sharedStg
+  properties: {
+    roleDefinitionId: storageQueueDataContributor.id
+    principalId: functionAppStagingSlot.identity.principalId
+    principalType: 'ServicePrincipal'
+  }  
 }
