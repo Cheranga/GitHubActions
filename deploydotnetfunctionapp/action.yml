@@ -24,7 +24,8 @@ runs:
     - name: 'Install .NET Core'
       uses: actions/setup-dotnet@v2
       with:
-          dotnet-version: ${{ inputs.dotnetVersion }}          
+          dotnet-version: ${{ inputs.dotnetVersion }}    
+                
     - name: 'Restore'
       shell: bash
       run: dotnet restore      
