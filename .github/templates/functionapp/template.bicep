@@ -4,8 +4,8 @@ param sgName string
 param location string = resourceGroup().location
 param storageSku string = 'Standard_LRS'
 param storageSkuTier string = 'Standard'
-param planSku string
-param planTier string
+param planSku string = 'Y1'
+param planTier string = 'Dynamic'
 
 var sanitizedFuncAppName = '${toLower(replace(funcAppName, '-', ''))}${envName}'
 var sanitizedStorageName = '${toLower(replace(sgName, '-', ''))}${envName}'
