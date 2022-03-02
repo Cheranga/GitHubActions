@@ -56,3 +56,5 @@ runs:
              envName=${{ inputs.environmentName }}
              funcAppName=${{ inputs.functionAppName }}
              sgName=${{ inputs.functionAppName }}
+             planTier=${{ inputs.planTier }}
+             planSku=${{ inputs.planSku }}
