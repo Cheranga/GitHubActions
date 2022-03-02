@@ -24,10 +24,7 @@ inputs:
     required: true
   location:
     description: 'The location where the function app will be deployed'
-    required: true    
-  sharedStorageAccount:
-    description: 'The shared storage account'
-    required: true    
+    required: true
 runs:
   using: 'composite'
   steps:  
