@@ -13,5 +13,6 @@ resource keyVault 'Microsoft.KeyVault/vaults@2021-10-01' = {
       name: 'standard'
     }     
     tenantId: subscription().tenantId
+    accessPolicies:[]
   }
 }
