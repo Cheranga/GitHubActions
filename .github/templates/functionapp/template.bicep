@@ -6,7 +6,6 @@ param storageSku string = 'Standard_LRS'
 param storageSkuTier string = 'Standard'
 param planSku string
 param planTier string
-param sharedStorageAccount string
 
 var sanitizedFuncAppName = '${toLower(replace(funcAppName, '-', ''))}${envName}'
 var sanitizedStorageName = '${toLower(replace(sgName, '-', ''))}${envName}'
@@ -191,14 +190,9 @@ resource storageQueueDataContributor 'Microsoft.Authorization/roleDefinitions@20
   name: '974c5e8b-45b9-4653-ba55-5f855dd0fb88'
 }
 
-resource sharedStg 'Microsoft.Storage/storageAccounts@2021-02-01' existing = {
-  scope: resourceGroup()  
-  name: sharedStorageAccount
-}
-
 resource storageQueueDataContributorProductionAssignment 'Microsoft.Authorization/roleAssignments@2020-04-01-preview' = {
   name: guid(resourceGroup().id, 'productionSlot', storageQueueDataContributor.id)  
-  scope:sharedStg
+  scope:storageAccount
   properties: {
     roleDefinitionId: storageQueueDataContributor.id
     principalId: functionAppProductionSlot.identity.principalId
@@ -208,7 +202,7 @@ resource storageQueueDataContributorProductionAssignment 'Microsoft.Authorizatio
 
 resource storageQueueDataContributorStagingAssignment 'Microsoft.Authorization/roleAssignments@2020-04-01-preview' = {
   name: guid(resourceGroup().id, 'stagingSlot', storageQueueDataContributor.id)
-  scope:sharedStg
+  scope:storageAccount
   properties: {
     roleDefinitionId: storageQueueDataContributor.id
     principalId: functionAppStagingSlot.identity.principalId

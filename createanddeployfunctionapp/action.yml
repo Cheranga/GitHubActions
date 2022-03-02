@@ -60,5 +60,4 @@ runs:
              funcAppName=${{ inputs.functionAppName }}
              sgName=${{ inputs.functionAppName }}
              planTier=${{ inputs.planTier }}
-             planSku=${{ inputs.planSku }}
-             sharedStorageAccount=${{ inputs.sharedStorageAccount }}
+             planSku=${{ inputs.planSku }}             
