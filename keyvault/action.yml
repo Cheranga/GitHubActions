@@ -16,10 +16,10 @@ inputs:
     required: true
   readAccessPrincipalList:
     description: 'The read access service principals'
-    required: true 
+    required: false 
   writeAccessPrincipalList:
     description: 'The write access service principals'
-    required: true        
+    required: false       
 runs:
   using: 'composite'
   steps:
