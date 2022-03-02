@@ -25,6 +25,9 @@ inputs:
   location:
     description: 'The location where the function app will be deployed'
     required: true    
+  sharedStorageAccount:
+    description: 'The shared storage account'
+    required: true    
 runs:
   using: 'composite'
   steps:  
@@ -58,3 +61,4 @@ runs:
              sgName=${{ inputs.functionAppName }}
              planTier=${{ inputs.planTier }}
              planSku=${{ inputs.planSku }}
+             sharedStorageAccount=${{ inputs.sharedStorageAccount }}
