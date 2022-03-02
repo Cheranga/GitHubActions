@@ -27,13 +27,15 @@ runs:
       uses: azure/login@v1
       with:
         creds: ${{ inputs.credentials }}
+    - name: 'Checkout Repository'
+      uses: actions/checkout@v2        
     - name: 'Create Key Vault'             
       uses: azure/arm-deploy@v1
       with:
           failOnStdErr: false
           deploymentName: ${{ inputs.keyVaultName }}
           resourceGroupName: ${{ inputs.resourceGroupName }}
-          template: Cheranga/GitHubActions/keyvault/template.bicep
+          template: template.bicep
           parameters: >
              keyVaultName=${{ inputs.keyVaultName }} 
              location=${{ inputs.location }} 
