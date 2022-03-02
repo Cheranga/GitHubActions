@@ -50,4 +50,4 @@ runs:
           resourceGroupName: ${{ inputs.resourceGroupName }}
           template: ./.github/templates/functionapp/template.bicep
           parameters: >
-             sgName='landsg${{ inputs.functionAppName }}'
+             sgName='sg${{ inputs.functionAppName }}'
