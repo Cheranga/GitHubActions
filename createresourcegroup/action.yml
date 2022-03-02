@@ -23,7 +23,7 @@ runs:
     - name: 'Create Resource Group'
       uses: Azure/CLI@v1
       with:
-        inlineScript:
+        inlineScript: |
             #!/bin/bash            
             if $(az group exists --name ${{ env.ResourceGroupName }}) ; then
               echo "Azure resource group already exists, skipping creation..."
