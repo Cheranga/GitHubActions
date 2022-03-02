@@ -1,0 +1,33 @@
+# action.yml
+name: 'Create Resource Group'
+description: 'Create the resource group if it does not exist'
+inputs:
+  credentials:
+    description: 'The credentials used to login to Azure'
+    required: true
+  name:
+    description: 'The name of the resource group'
+    required: true
+    default: 'rg-test'
+  location:
+    description: 'The location where resource group needs to be created in'
+    required: true
+    default: 'australiasoutheast'    
+runs:
+  using: 'composite'
+  steps:
+    - name: 'Login to Azure'
+      uses: azure/login@v1
+      with:
+        creds: ${{ inputs.credentials }}
+    - name: 'Create Resource Group'
+      uses: Azure/CLI@v1
+      with:
+        inlineScript:
+            #!/bin/bash            
+            if $(az group exists --name ${{ env.ResourceGroupName }}) ; then
+              echo "Azure resource group already exists, skipping creation..."
+            else
+              az group create --name ${{ env.ResourceGroupName }} --location ${{ env.ResourceGroupLocation }}
+              echo "Azure resource group created"
+            fi
