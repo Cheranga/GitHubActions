@@ -25,6 +25,8 @@ runs:
   steps:
     - name: 'Login to Azure'
       uses: azure/login@v1
+      with:
+        creds: ${{ inputs.credentials }}
     - name: 'Checkout Repository'
       uses: actions/checkout@v2
       with:
