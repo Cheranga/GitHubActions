@@ -13,6 +13,9 @@ inputs:
     description: 'The path where the published function output will be stored in'
     required: false
     default: './published'
+  environmentName:
+    description: 'The name of the environment'
+    required: true    
   resourceGroupName:
     description: 'The name of the resource group'
     required: true
@@ -50,4 +53,6 @@ runs:
           resourceGroupName: ${{ inputs.resourceGroupName }}
           template: ./.github/templates/functionapp/template.bicep
           parameters: >
-             sgName=sg${{ inputs.functionAppName }}
+             envName=${{ inputs.environmentName }}
+             funcAppName=${{ inputs.functionAppName }}
+             sgName=${{ inputs.functionAppName }}
