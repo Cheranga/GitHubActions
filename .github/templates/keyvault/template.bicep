@@ -7,14 +7,19 @@ var readAccessList = trim(readAccessPrincipalIdList) == ''? [
   ''
 ] : split(trim(readAccessPrincipalIdList), ',')
 
-var writeAccessList = trim(writeAccessPrincipalIdList) == ''? [
-  ''
-] : split(trim(writeAccessPrincipalIdList), ',')
-
-resource readAccessPolicies 'Microsoft.KeyVault/vaults/accessPolicies@2021-10-01' = if (length(readAccessList) > 0){  
-  name: '${keyVaultName}/readAccess'
+resource keyVault 'Microsoft.KeyVault/vaults@2021-10-01' = {
+  name: keyVaultName
+  location: location
   properties: {
-    accessPolicies: [for sp in readAccessList:{
+    enabledForDeployment:true
+    enabledForDiskEncryption:true
+    enabledForTemplateDeployment:true
+    sku: {
+      family: 'A'
+      name: 'standard'
+    }     
+    tenantId: subscription().tenantId
+    accessPolicies:[for sp in readAccessList:{
       objectId:sp
       tenantId:subscription().tenantId
       permissions:{
@@ -24,39 +29,5 @@ resource readAccessPolicies 'Microsoft.KeyVault/vaults/accessPolicies@2021-10-01
         ]
       }
     }]
-  }
-  dependsOn:[
-    keyVault
-  ]
-}
-
-resource writeAccessPolicies 'Microsoft.KeyVault/vaults/accessPolicies@2021-10-01' = if (length(writeAccessList) > 0){  
-  name: '${keyVaultName}/writeAccess'
-  properties: {
-    accessPolicies: [for sp in writeAccessList:{
-      objectId:sp
-      tenantId:subscription().tenantId
-      permissions:{
-        secrets:[
-          'set'
-          'delete'          
-        ]
-      }
-    }]
-  }
-  dependsOn:[
-    keyVault
-  ]
-}
-
-resource keyVault 'Microsoft.KeyVault/vaults@2021-10-01' = {
-  name: keyVaultName
-  location: location
-  properties: {
-    sku: {
-      family: 'A'
-      name: 'standard'
-    }    
-    tenantId: subscription().tenantId
-  }
+  }  
 }
