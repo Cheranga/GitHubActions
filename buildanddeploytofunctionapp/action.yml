@@ -1,0 +1,50 @@
+# action.yml
+name: 'Build and Deploy .NET Function App'
+description: 'Build and deploys the .NET function app to Azure'
+inputs:
+  credentials:
+    description: 'The credentials used to login to Azure'
+    required: true  
+  dotnetVersion:
+    description: 'The dotnet version the function is implemented'
+    required: true
+    default: '6.0.x'  
+  packagePath:
+    description: 'The path where the published function output will be stored in'
+    required: true
+    default: './published'
+  functionAppName:
+    description: 'The name of the function app'
+    required: true
+runs:
+  using: 'composite'
+  steps:
+    - name: 'Checkout Repository'
+      uses: actions/checkout@v2
+    - name: 'Install .NET Core'
+      uses: actions/setup-dotnet@v2
+      with:
+          dotnet-version: ${{ inputs.dotnetVersion }}          
+    - name: 'Restore'
+      shell: bash
+      run: dotnet restore      
+
+    - name: 'Build'
+      shell: bash
+      run: dotnet build --no-restore -c Release
+
+    - name: 'Publish'
+      shell: bash
+      run: dotnet publish --configuration Release --no-build --output '${{ inputs.packagePath }}/funcapp'                      
+
+    - name: 'Login to Azure'
+      uses: azure/login@v1
+      with:
+        creds: ${{ inputs.credentials }}
+
+    - name: 'Deploy Azure Function App'
+      uses: azure/webapps-deploy@v2
+      with:
+        app-name: ${{ inputs.functionAppName }}
+        package: '${{ env.PackagePath }}/funcapp'
+        slot-name: Staging
