@@ -26,16 +26,14 @@ runs:
     - name: 'Login to Azure'
       uses: azure/login@v1
       with:
-        creds: ${{ inputs.credentials }}
-    - name: 'Checkout Repository'
-      uses: actions/checkout@v2        
+        creds: ${{ inputs.credentials }}     
     - name: 'Create Key Vault'             
       uses: azure/arm-deploy@v1
       with:
           failOnStdErr: false
           deploymentName: ${{ inputs.keyVaultName }}
           resourceGroupName: ${{ inputs.resourceGroupName }}
-          template: template.bicep
+          template: ./template.bicep
           parameters: >
              keyVaultName=${{ inputs.keyVaultName }} 
              location=${{ inputs.location }} 
