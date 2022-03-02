@@ -191,7 +191,7 @@ resource storageQueueDataContributor 'Microsoft.Authorization/roleDefinitions@20
 }
 
 resource storageQueueDataContributorProductionAssignment 'Microsoft.Authorization/roleAssignments@2020-04-01-preview' = {
-  name: guid(resourceGroup().id, 'productionSlot', storageQueueDataContributor.id)  
+  name: guid(resourceGroup().id, 'productionSlot', storageQueueDataContributor.id)
   scope:storageAccount
   properties: {
     roleDefinitionId: storageQueueDataContributor.id
@@ -209,3 +209,4 @@ resource storageQueueDataContributorStagingAssignment 'Microsoft.Authorization/r
     principalType: 'ServicePrincipal'
   }  
 }
+
