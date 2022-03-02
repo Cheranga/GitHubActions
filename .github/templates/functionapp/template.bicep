@@ -9,6 +9,8 @@ param planTier string
 
 var sanitizedFuncAppName = '${toLower(replace(funcAppName, '-', ''))}${envName}'
 var sanitizedStorageName = '${toLower(replace(sgName, '-', ''))}${envName}'
+var queue = 'https://${sanitizedStorageName}.queue.core.windows.net'
+var timeZone = 'AUS Eastern Standard Time'
 
 // Storage Account
 resource storageAccount 'Microsoft.Storage/storageAccounts@2021-02-01' = {
@@ -69,4 +71,63 @@ resource functionAppStagingSlot 'Microsoft.Web/sites/slots@2021-03-01' = {
       autoSwapSlotName:'Production'
     }         
   }  
+}
+
+// Keyvault with secrets
+resource keyVault 'Microsoft.KeyVault/vaults@2021-06-01-preview' = {
+  name: 'kv-${sanitizedFuncAppName}'
+  location: location
+  properties: {
+    enabledForDeployment: true
+    enabledForTemplateDeployment: true
+    enabledForDiskEncryption: true
+    sku: {
+      family: 'A'
+      name: 'standard'
+    }    
+    tenantId: subscription().tenantId
+    accessPolicies: []    
+  }    
+}
+
+
+resource storageAccountConnectionStringSecret 'Microsoft.KeyVault/vaults/secrets@2021-06-01-preview'={
+  name: '${keyVault.name}/storageAccountConnectionString'
+  properties: {
+    value:'DefaultEndpointsProtocol=https;AccountName=${storageAccount.name};EndpointSuffix=${environment().suffixes.storage};AccountKey=${listKeys(storageAccount.id, storageAccount.apiVersion).keys[0].value}'
+  }  
+}
+
+resource appInsightsKeySecret 'Microsoft.KeyVault/vaults/secrets@2021-06-01-preview'={
+  name: '${keyVault.name}/appInsightsKey'
+  properties: {
+    value:reference(appIns.id, appIns.apiVersion).InstrumentationKey
+  }  
+}
+
+// Function app settings
+resource productionSlotAppSettings 'Microsoft.Web/sites/config@2021-02-01' = {
+  name: '${sanitizedFuncAppName}/appsettings'
+  properties:{
+    CustomerApiKey: 'This is the production setting'          
+    FUNCTIONS_EXTENSION_VERSION: '~4'    
+    FUNCTIONS_WORKER_RUNTIME: 'dotnet'    
+  }
+}
+
+resource stagingSlotAppSettings 'Microsoft.Web/sites/slots/config@2021-02-01'= {
+  name: '${sanitizedFuncAppName}/Staging/appsettings'
+  properties:{
+    CustomerApiKey: 'This is the staging setting'  
+    AzureWebJobsStorage__accountName: sgName
+    HotelCancellationQueue: 'hotel-cancellations'
+    QueueSource__queueServiceUri: queue
+    WEBSITE_CONTENTAZUREFILECONNECTIONSTRING: storageAccountConnectionStringSecret
+    WEBSITE_CONTENTSHARE: toLower(sanitizedFuncAppName)
+    FUNCTIONS_EXTENSION_VERSION: '~3'
+    APPINSIGHTS_INSTRUMENTATIONKEY: appInsightsKeySecret
+    FUNCTIONS_WORKER_RUNTIME: 'dotnet'
+    WEBSITE_TIME_ZONE: timeZone
+    WEBSITE_ADD_SITENAME_BINDINGS_IN_APPHOST_CONFIG: 1
+  }
 }
