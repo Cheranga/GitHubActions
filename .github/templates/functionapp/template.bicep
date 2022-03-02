@@ -122,10 +122,10 @@ resource stagingSlotAppSettings 'Microsoft.Web/sites/slots/config@2021-02-01'= {
     AzureWebJobsStorage__accountName: sgName
     HotelCancellationQueue: 'hotel-cancellations'
     QueueSource__queueServiceUri: queue
-    WEBSITE_CONTENTAZUREFILECONNECTIONSTRING: storageAccountConnectionStringSecret
+    WEBSITE_CONTENTAZUREFILECONNECTIONSTRING: '@Microsoft.KeyVault(SecretUri=https://${keyVault.name}.vault.azure.net/secrets/storageAccountConnectionString/)'
     WEBSITE_CONTENTSHARE: toLower(sanitizedFuncAppName)
-    FUNCTIONS_EXTENSION_VERSION: '~3'
-    APPINSIGHTS_INSTRUMENTATIONKEY: appInsightsKeySecret
+    FUNCTIONS_EXTENSION_VERSION: '~4'
+    APPINSIGHTS_INSTRUMENTATIONKEY: '@Microsoft.KeyVault(SecretUri=https://${keyVault.name}.vault.azure.net/secrets/appInsightsKey/)'
     FUNCTIONS_WORKER_RUNTIME: 'dotnet'
     WEBSITE_TIME_ZONE: timeZone
     WEBSITE_ADD_SITENAME_BINDINGS_IN_APPHOST_CONFIG: 1
