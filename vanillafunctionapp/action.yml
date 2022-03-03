@@ -17,6 +17,9 @@ inputs:
   location:
     description: 'The location where the function app will be deployed'
     required: true
+  category:
+    description: 'The category of the related resources. Allowed values are "nonprod" and "prod"'
+    required: true    
 runs:
   using: 'composite'
   steps:  
@@ -48,5 +51,5 @@ runs:
              envName=${{ inputs.environmentName }}
              funcAppName=${{ inputs.functionAppName }}
              sgName=${{ inputs.functionAppName }}
-             planTier=${{ inputs.planTier }}
-             planSku=${{ inputs.planSku }}             
+             location=${{ inputs.location }}
+             category=${{ inputs.category }}           

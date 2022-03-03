@@ -2,15 +2,35 @@ param envName string
 param funcAppName string
 param sgName string
 param location string = resourceGroup().location
-param storageSku string = 'Standard_LRS'
-param storageSkuTier string = 'Standard'
-param planSku string = 'Y1'
-param planTier string = 'Dynamic'
+
+@allowed([
+  'nonprod'
+  'prod'
+])
+param category string = 'nonprod'
+
+var storageSku = {
+  nonprod: 'Standard_LRS'
+  prod: 'Standard_GRS'
+}
+
+var storageSkuTier = {
+  nonprod: 'Standard'
+  prod:'Premium'
+}
+
+var planSku = {
+  nonprod: 'Y1'
+  prod: 'Y1'
+}
+
+var planTier = {
+  nonprod: 'Dynamic'
+  prod: 'Dynamic'
+}
 
 var sanitizedFuncAppName = '${toLower(replace(funcAppName, '-', ''))}${envName}'
 var sanitizedStorageName = '${toLower(replace(sgName, '-', ''))}${envName}'
-var queue = 'https://sg${sanitizedStorageName}.queue.core.windows.net'
-var timeZone = 'AUS Eastern Standard Time'
 
 // Storage Account
 resource storageAccount 'Microsoft.Storage/storageAccounts@2021-02-01' = {
@@ -18,8 +38,8 @@ resource storageAccount 'Microsoft.Storage/storageAccounts@2021-02-01' = {
   location: location
   kind: 'StorageV2'
   sku: {
-    name: storageSku
-    tier: storageSkuTier
+    name: storageSku[category]
+    tier: storageSkuTier[category]
   }  
 }
 
@@ -40,8 +60,8 @@ resource asp 'Microsoft.Web/serverfarms@2021-02-01' = {
   name: 'plan-${sanitizedFuncAppName}'
   location: location
   sku:{
-    name:planSku
-    tier:planTier
+    name:planSku[category]
+    tier:planTier[category]
   }
 }
 
@@ -111,7 +131,6 @@ resource keyVault 'Microsoft.KeyVault/vaults@2021-06-01-preview' = {
   }    
 }
 
-
 resource storageAccountConnectionStringSecret 'Microsoft.KeyVault/vaults/secrets@2021-06-01-preview'={
   name: '${keyVault.name}/storageAccountConnectionString'
   properties: {
@@ -125,39 +144,6 @@ resource appInsightsKeySecret 'Microsoft.KeyVault/vaults/secrets@2021-06-01-prev
     value:reference(appIns.id, appIns.apiVersion).InstrumentationKey
   }  
 }
-
-// Function app settings
-// resource productionSlotAppSettings 'Microsoft.Web/sites/config@2021-02-01' = {
-//   name: '${sanitizedFuncAppName}/appsettings'
-//   properties:{
-//     CustomerApiKey: 'This is the production setting'          
-//     FUNCTIONS_EXTENSION_VERSION: '~4'    
-//     FUNCTIONS_WORKER_RUNTIME: 'dotnet'    
-//   }
-//   dependsOn:[
-//     functionAppProductionSlot
-//   ]
-// }
-
-// resource stagingSlotAppSettings 'Microsoft.Web/sites/slots/config@2021-02-01'= {
-//   name: '${sanitizedFuncAppName}/Staging/appsettings'
-//   properties:{
-//     CustomerApiKey: 'This is the staging setting'  
-//     AzureWebJobsStorage__accountName: storageAccount.name
-//     HotelCancellationQueue: 'hotel-cancellations'
-//     QueueSource__queueServiceUri: queue
-//     WEBSITE_CONTENTAZUREFILECONNECTIONSTRING: '@Microsoft.KeyVault(SecretUri=https://${keyVault.name}.vault.azure.net/secrets/storageAccountConnectionString/)'
-//     WEBSITE_CONTENTSHARE: toLower(sanitizedFuncAppName)
-//     FUNCTIONS_EXTENSION_VERSION: '~4'
-//     APPINSIGHTS_INSTRUMENTATIONKEY: '@Microsoft.KeyVault(SecretUri=https://${keyVault.name}.vault.azure.net/secrets/appInsightsKey/)'
-//     FUNCTIONS_WORKER_RUNTIME: 'dotnet'
-//     WEBSITE_TIME_ZONE: timeZone
-//     WEBSITE_ADD_SITENAME_BINDINGS_IN_APPHOST_CONFIG: 1
-//   }
-//   dependsOn:[    
-//     functionAppStagingSlot    
-//   ]
-// }
 
 // Assigning RBAC
 resource storageBlobDataOwnerDefinition 'Microsoft.Authorization/roleDefinitions@2018-01-01-preview' existing = {
@@ -184,29 +170,3 @@ resource storageBlobDataOwnerStagingAssignment 'Microsoft.Authorization/roleAssi
     principalType: 'ServicePrincipal'
   }  
 }
-
-// resource storageQueueDataContributor 'Microsoft.Authorization/roleDefinitions@2018-01-01-preview' existing = {
-//   scope: subscription()
-//   name: '974c5e8b-45b9-4653-ba55-5f855dd0fb88's
-// }
-
-// resource storageQueueDataContributorProductionAssignment 'Microsoft.Authorization/roleAssignments@2020-04-01-preview' = {
-//   name: guid(resourceGroup().id, 'productionSlot', storageQueueDataContributor.id)
-//   scope:storageAccount
-//   properties: {
-//     roleDefinitionId: storageQueueDataContributor.id
-//     principalId: functionAppProductionSlot.identity.principalId
-//     principalType: 'ServicePrincipal'
-//   }  
-// }
-
-// resource storageQueueDataContributorStagingAssignment 'Microsoft.Authorization/roleAssignments@2020-04-01-preview' = {
-//   name: guid(resourceGroup().id, 'stagingSlot', storageQueueDataContributor.id)
-//   scope:storageAccount
-//   properties: {
-//     roleDefinitionId: storageQueueDataContributor.id
-//     principalId: functionAppStagingSlot.identity.principalId
-//     principalType: 'ServicePrincipal'
-//   }  
-// }
-
