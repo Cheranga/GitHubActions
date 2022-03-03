@@ -187,7 +187,7 @@ resource storageBlobDataOwnerStagingAssignment 'Microsoft.Authorization/roleAssi
 
 // resource storageQueueDataContributor 'Microsoft.Authorization/roleDefinitions@2018-01-01-preview' existing = {
 //   scope: subscription()
-//   name: '974c5e8b-45b9-4653-ba55-5f855dd0fb88'
+//   name: '974c5e8b-45b9-4653-ba55-5f855dd0fb88's
 // }
 
 // resource storageQueueDataContributorProductionAssignment 'Microsoft.Authorization/roleAssignments@2020-04-01-preview' = {

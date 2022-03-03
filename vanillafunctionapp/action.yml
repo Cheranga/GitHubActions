@@ -1,0 +1,52 @@
+# action.yml
+name: 'Deploy vanilla function app with related resources'
+description: 'Deploy vanilla function app with related resources'
+inputs:
+  credentials:
+    description: 'The credentials used to login to Azure'
+    required: true    
+  environmentName:
+    description: 'The name of the environment'
+    required: true    
+  resourceGroupName:
+    description: 'The name of the resource group'
+    required: true
+  functionAppName:
+    description: 'The name of the function app'
+    required: true
+  location:
+    description: 'The location where the function app will be deployed'
+    required: true
+runs:
+  using: 'composite'
+  steps:  
+    - name: 'Login to Azure'
+      uses: azure/login@v1
+      with:
+        creds: ${{ inputs.credentials }}
+
+    - name: 'Create Resource Group'
+      uses: Cheranga/GitHubActions/createresourcegroup@master
+      with:
+        credentials: ${{ inputs.credentials }}
+        name: ${{ inputs.resourceGroupName }}
+        location: ${{ inputs.location }}      
+
+    - name: 'Checkout Actions Repository'
+      uses: actions/checkout@v2
+      with:
+        repository: 'Cheranga/GitHubActions'             
+
+    - name: 'Provision Infrastructure for Function App'
+      uses: azure/arm-deploy@v1
+      with:
+          failOnStdErr: false
+          deploymentName: '${{ github.run_number }}-${{ inputs.functionAppName }}'
+          resourceGroupName: ${{ inputs.resourceGroupName }}
+          template: ./.github/templates/vanillafunctionapp/template.bicep
+          parameters: >
+             envName=${{ inputs.environmentName }}
+             funcAppName=${{ inputs.functionAppName }}
+             sgName=${{ inputs.functionAppName }}
+             planTier=${{ inputs.planTier }}
+             planSku=${{ inputs.planSku }}             
