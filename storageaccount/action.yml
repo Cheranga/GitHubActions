@@ -5,6 +5,12 @@ inputs:
   credentials:
     description: 'The credentials used to login to Azure'
     required: true
+  deploymentName:
+    description: 'The name of the deployment'
+    required: true    
+  resourceGroupName:
+    description: 'The name of the resource group'
+    required: true        
   name:
     description: 'Name of the storage account'
     required: true
@@ -30,7 +36,7 @@ runs:
 
     - name: 'Provision Infrastructure for Function App'
       uses: azure/arm-deploy@v1
-      with:
+      with:          
           failOnStdErr: false
           deploymentName: '${{ inputs.deploymentName }}'
           resourceGroupName: ${{ inputs.resourceGroupName }}
