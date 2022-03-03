@@ -93,6 +93,40 @@ resource functionAppStagingSlot 'Microsoft.Web/sites/slots@2021-03-01' = {
   }  
 }
 
+// Function app settings
+resource productionSlotAppSettings 'Microsoft.Web/sites/config@2021-02-01' = {
+  name: '${sanitizedFuncAppName}/appsettings'
+  properties:{    
+    AzureWebJobsStorage__accountName: storageAccount.name
+    WEBSITE_CONTENTAZUREFILECONNECTIONSTRING: '@Microsoft.KeyVault(SecretUri=https://${keyVault.name}.vault.azure.net/secrets/storageAccountConnectionString/)'
+    WEBSITE_CONTENTSHARE: toLower(sanitizedFuncAppName)
+    FUNCTIONS_EXTENSION_VERSION: '~4'
+    APPINSIGHTS_INSTRUMENTATIONKEY: '@Microsoft.KeyVault(SecretUri=https://${keyVault.name}.vault.azure.net/secrets/appInsightsKey/)'
+    FUNCTIONS_WORKER_RUNTIME: 'dotnet'
+    WEBSITE_ADD_SITENAME_BINDINGS_IN_APPHOST_CONFIG: 1
+  }
+  dependsOn:[
+    functionAppProductionSlot
+  ]
+}
+
+resource stagingSlotAppSettings 'Microsoft.Web/sites/slots/config@2021-02-01'= {
+  name: '${sanitizedFuncAppName}/Staging/appsettings'
+  properties:{    
+    AzureWebJobsStorage__accountName: storageAccount.name
+    WEBSITE_CONTENTAZUREFILECONNECTIONSTRING: '@Microsoft.KeyVault(SecretUri=https://${keyVault.name}.vault.azure.net/secrets/storageAccountConnectionString/)'
+    WEBSITE_CONTENTSHARE: toLower(sanitizedFuncAppName)
+    FUNCTIONS_EXTENSION_VERSION: '~4'
+    APPINSIGHTS_INSTRUMENTATIONKEY: '@Microsoft.KeyVault(SecretUri=https://${keyVault.name}.vault.azure.net/secrets/appInsightsKey/)'
+    FUNCTIONS_WORKER_RUNTIME: 'dotnet'
+    WEBSITE_ADD_SITENAME_BINDINGS_IN_APPHOST_CONFIG: 1
+  }
+  dependsOn:[    
+    functionAppStagingSlot    
+  ]
+}
+
+
 // Keyvault with secrets
 resource keyVault 'Microsoft.KeyVault/vaults@2021-06-01-preview' = {
   name: 'kv-${sanitizedFuncAppName}'
