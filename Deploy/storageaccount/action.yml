@@ -1,0 +1,41 @@
+# action.yml
+name: 'Create Storage Account'
+description: 'Create storage account'
+inputs:
+  credentials:
+    description: 'The credentials used to login to Azure'
+    required: true
+  name:
+    description: 'Name of the storage account'
+    required: true
+  location:
+    description: 'The location where the function app will be deployed'
+    required: true
+  storageType:
+    description: 'The type of the storage account. Allowed values are "nonprod" and "prod"'
+    required: true    
+    default: 'nonprod'  
+runs:
+  using: 'composite'
+  steps:  
+    - name: 'Login to Azure'
+      uses: azure/login@v1
+      with:
+        creds: ${{ inputs.credentials }}
+
+    - name: 'Checkout Actions Repository'
+      uses: actions/checkout@v2
+      with:
+        repository: 'Cheranga/GitHubActions'             
+
+    - name: 'Provision Infrastructure for Function App'
+      uses: azure/arm-deploy@v1
+      with:
+          failOnStdErr: false
+          deploymentName: '${{ inputs.deploymentName }}'
+          resourceGroupName: ${{ inputs.resourceGroupName }}
+          template: ./.github/templates/storageaccount/template.bicep
+          parameters: >
+             name=${{ inputs.name }}
+             location=${{ inputs.location }}
+             storageType=${{ inputs.storageType }}
