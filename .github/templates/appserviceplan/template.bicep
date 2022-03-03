@@ -1,11 +1,21 @@
 @description('Application service plan name')
 param name string
 
-@description('Application service plan SKU')
-param sku string
+@allowed([
+  'nonprod'
+  'prod'
+])
+param planType string ='nonprod'
 
-@description('Application service plan tier')
-param tier string
+var sku = {
+  nonprod: 'Y1'
+  prod:'Y1'
+}
+
+var tier = {
+  nonprod:'Dynamic'
+  prod:'Dynamic'
+}
 
 param location string = resourceGroup().location
 
@@ -13,9 +23,7 @@ resource asp 'Microsoft.Web/serverfarms@2021-02-01' = {
   name: name
   location: location
   sku:{
-    name:sku
-    tier:tier
+    name:sku[planType]
+    tier:tier[planType]
   }
 }
-
-output planId string = asp.id
