@@ -1,0 +1,43 @@
+# action.yml
+name: 'Create Key Vault'
+description: 'Create Key Vault'
+inputs:
+  credentials:
+    description: 'The credentials used to login to Azure'
+    required: true
+  keyVaultName:
+    description: 'The name of the key vault'
+    required: true
+  resourceGroupName:
+    description: 'The name of the resource group'
+    required: true
+  location:
+    description: 'The location'
+    required: true
+  secretData:
+    description: 'The secret data configuration'  
+    required: true    
+runs:
+  using: 'composite'
+  steps:
+    - name: 'Login to Azure'
+      uses: azure/login@v1
+      with:
+        creds: ${{ inputs.credentials }}
+    - name: 'Checkout Repository'
+      uses: actions/checkout@v2
+      with:
+        repository: 'Cheranga/GitHubActions' 
+    - name: 'Create Key Vault'             
+      uses: azure/arm-deploy@v1
+      with:
+          failOnStdErr: false
+          deploymentName: ${{ inputs.keyVaultName }}
+          resourceGroupName: ${{ inputs.resourceGroupName }}
+          template: ./.github/templates/keyvaultwithsecrets/template.bicep
+          parameters: >
+             keyVaultName=${{ inputs.keyVaultName }} 
+             location=${{ inputs.location }} 
+             secretData=${{ inputs.secretData }} 
+
+             
