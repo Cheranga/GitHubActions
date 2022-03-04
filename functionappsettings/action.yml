@@ -8,6 +8,9 @@ inputs:
   resourceGroupName:
     description: 'The name of the resource group'
     required: true    
+  location:
+    description: 'The location of the function app'
+    required: true       
   credentials:
     description: 'The credentials used to login to Azure'
     required: true
@@ -37,6 +40,7 @@ runs:
           template: ./.github/templates/functionappsettings/template.bicep
           parameters: >
              functionAppName=${{ inputs.functionAppName }} 
+             location=${{ inputs.functionAppName }} 
              appSettings=${{ inputs.appSettings }} 
 
              

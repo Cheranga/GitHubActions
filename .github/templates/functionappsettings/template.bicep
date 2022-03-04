@@ -1,20 +1,21 @@
 param functionAppName string
+param location string
 
 @secure()
 param appSettings string
 
-var settings = json(appSettings).siteConfig
+var items = json(appSettings).items
 
-var items = [for item in settings.appSettings:{
-  name: '${item.name}'
-  value: '${item.value}'
-}]
-
-resource slotSpecificSettings 'Microsoft.Web/sites/config@2021-03-01' = {
+resource deploymentSlot 'Microsoft.Web/sites/slots@2021-01-15' = {
   name: '${functionAppName}/Staging'
-  properties:{
+  location: location
+  kind:'functionapp'  
+  properties: {    
     siteConfig: {
-      appSettings:items
+      appSettings: [for item in items: {
+        name: '${item.name}'
+        value: '${item.value}'
+      }]
     }
   }
 }
