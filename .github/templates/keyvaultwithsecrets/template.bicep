@@ -1,10 +1,11 @@
 param keyVaultName string = ''
 param location string = resourceGroup().location
 
-@secure()
-param secretData string
 
-var secretDataItems = json(secretData).items
+@secure()
+param secretData object
+
+var secretDataItems = secretData.items
 
 resource keyVault 'Microsoft.KeyVault/vaults@2021-10-01' = {
   name: keyVaultName
