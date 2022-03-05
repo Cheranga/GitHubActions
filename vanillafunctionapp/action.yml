@@ -4,7 +4,10 @@ description: 'Deploy vanilla function app with related resources'
 inputs:
   credentials:
     description: 'The credentials used to login to Azure'
-    required: true    
+    required: true  
+  deploymentName:
+    description: 'The name of the deployment'
+    required: true        
   environmentName:
     description: 'The name of the environment'
     required: true    
@@ -44,7 +47,7 @@ runs:
       uses: azure/arm-deploy@v1
       with:
           failOnStdErr: false
-          deploymentName: '${{ github.run_number }}-${{ inputs.functionAppName }}'
+          deploymentName: ${{ inputs.deploymentName }}
           resourceGroupName: ${{ inputs.resourceGroupName }}
           template: ./.github/templates/vanillafunctionapp/template.bicep
           parameters: >
