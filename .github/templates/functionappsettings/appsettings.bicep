@@ -9,5 +9,5 @@ resource functionAppResource 'Microsoft.Web/sites@2021-03-01' existing = {
 
 resource siteconfig 'Microsoft.Web/sites/config@2021-03-01' = {
   name: '${functionAppName}/appsettings'
-  properties: union(appSettings, functionAppResource.properties.siteConfig)
+  properties: union(appSettings, functionAppResource.properties)
 }
