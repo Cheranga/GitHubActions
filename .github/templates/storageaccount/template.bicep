@@ -1,8 +1,10 @@
 param name string
 param location string = resourceGroup().location
-param queues string
+param queues array = [
+  ''
+]
 
-var queueArray = split(queues, '')
+// var queueArray = split(queues, '')
 
 @allowed([
   'nonprod'
@@ -27,9 +29,9 @@ resource stg 'Microsoft.Storage/storageAccounts@2021-02-01' = {
   sku: {
     name: storageSku[storageType]
   }  
-  resource queueService 'queueServices' = if (!empty(queueArray)) {
+  resource queueService 'queueServices' = if (!empty(queues)) {
     name:'default'    
-    resource queue 'queues' = [for q in queueArray:{
+    resource queue 'queues' = [for q in queues:{
       name: q
     }]
   }
