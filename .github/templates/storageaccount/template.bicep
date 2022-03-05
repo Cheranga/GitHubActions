@@ -2,7 +2,7 @@ param name string
 param location string = resourceGroup().location
 param queues string
 
-var queueArray = split(queues, '-')
+var queueArray = split(queues, ',')
 
 @allowed([
   'nonprod'
