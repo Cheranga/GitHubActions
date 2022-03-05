@@ -104,6 +104,25 @@ resource productionSlotAppSettings 'Microsoft.Web/sites/config@2021-02-01' = {
   ]
 }
 
+resource productionSlotSpecificAppSettings 'Microsoft.Web/sites/config@2021-02-01' = {
+  name: '${sanitizedFuncAppName}/slotconfignames'
+  properties:{        
+    appSettingNames:[
+      'AzureWebJobsStorage__accountName'
+      'WEBSITE_CONTENTAZUREFILECONNECTIONSTRING'
+      'WEBSITE_CONTENTSHARE'
+      'FUNCTIONS_EXTENSION_VERSION'
+      'APPINSIGHTS_INSTRUMENTATIONKEY'
+      'FUNCTIONS_WORKER_RUNTIME'
+      'WEBSITE_ADD_SITENAME_BINDINGS_IN_APPHOST_CONFIG'
+    ]
+  }
+  dependsOn:[
+    functionAppProductionSlot
+  ]
+}
+
+
 resource stagingSlotAppSettings 'Microsoft.Web/sites/slots/config@2021-02-01'= {
   name: '${sanitizedFuncAppName}/Staging/appsettings'
   properties:{    
