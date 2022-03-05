@@ -23,21 +23,24 @@ resource stg 'Microsoft.Storage/storageAccounts@2021-02-01' = {
   kind: 'StorageV2'
   sku: {
     name: storageSku[storageType]
-  }  
-  resource queueService 'queueServices' = if (!empty(queueArray)) {
-    name:'default'    
-    resource queue 'queues' = [for q in queueArray:{
-      name: trim(q)
-    }]
-  }
-  resource blobService 'blobServices' = if (!empty(containerArray)) {
-    name:'default'    
-    resource blob 'containers' = [for container in containerArray:{
-      name: trim(container)
-    }]
-  }
+  }    
 }
 
+resource queueService 'Microsoft.Storage/storageAccounts/queueServices@2021-08-01' = if (!empty(queueArray)) {
+  name:'default'    
+  parent:stg
+  resource queue 'queues' = [for q in queueArray: {
+    name:q
+  }]
+}
+
+resource blobService 'Microsoft.Storage/storageAccounts/blobServices@2021-08-01' = if (!empty(containerArray)) {
+  name:'default'    
+  parent:stg
+  resource container 'containers' = [for c in containerArray: {
+    name:c
+  }]
+}
 
 // resource queueServices 'Microsoft.Storage/storageAccounts/queueServices@2021-08-01' = if(!empty(queues)){
 //   name:'default'  
