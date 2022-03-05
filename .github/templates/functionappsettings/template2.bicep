@@ -7,10 +7,10 @@ param appSettings string
 var settings = json(appSettings).settings
 
 // Get the existing function app
-resource functionAppResource 'Microsoft.Web/sites@2021-03-01' existing = {
-  scope:resourceGroup()  
-  name:functionAppName
+resource functionAppResource 'Microsoft.Web/sites/config@2021-03-01' existing = {
+  name: '${functionAppName}/appsettings'
 }
+  
 
 resource additionalAppSettings 'Microsoft.Web/sites@2021-03-01' = if (!empty(settings)) {
   name: functionAppName
