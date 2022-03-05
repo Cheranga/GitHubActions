@@ -24,6 +24,9 @@ inputs:
   queues:
     description: 'The queues'
     required: false
+  blobContainers:
+    description: 'The BLOB containers'
+    required: false    
     
 runs:
   using: 'composite'
@@ -50,3 +53,4 @@ runs:
              location=${{ inputs.location }}
              storageType=${{ inputs.storageType }}
              queues=${{inputs.queues}}
+             blobContainers=${{inputs.blobContainers}}

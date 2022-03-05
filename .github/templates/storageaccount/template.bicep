@@ -1,8 +1,10 @@
 param name string
 param location string = resourceGroup().location
 param queues string
+param blobContainers string
 
 var queueArray = split(queues, ',')
+var containerArray = split(blobContainers, ',')
 
 @allowed([
   'nonprod'
@@ -13,11 +15,6 @@ param storageType string = 'nonprod'
 var storageSku = {
   nonprod:'Standard_LRS'
   prod: 'Standard_GRS'
-}
-
-var storageTier = {
-  nonprod: 'Standard'
-  prod: 'Premium'
 }
 
 resource stg 'Microsoft.Storage/storageAccounts@2021-02-01' = {
@@ -31,6 +28,12 @@ resource stg 'Microsoft.Storage/storageAccounts@2021-02-01' = {
     name:'default'    
     resource queue 'queues' = [for q in queueArray:{
       name: trim(q)
+    }]
+  }
+  resource blobService 'blobServices' = if (!empty(containerArray)) {
+    name:'default'    
+    resource queue 'containers' = [for container in containerArray:{
+      name: trim(container)
     }]
   }
 }
