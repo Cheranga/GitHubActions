@@ -71,7 +71,10 @@ resource functionAppProductionSlot 'Microsoft.Web/sites@2021-03-01' = {
   }    
   properties:{
     serverFarmId:asp.name            
-  }    
+  }   
+  dependsOn:[
+    storageAccount
+  ] 
 }
 
 // Function app settings
@@ -149,8 +152,8 @@ resource storageBlobDataOwnerProductionAssignment 'Microsoft.Authorization/roleA
     principalId: functionAppProductionSlot.identity.principalId
     principalType: 'ServicePrincipal'
   }
-  dependsOn:[
-    storageAccount
-    functionAppProductionSlot
-  ]
+  // dependsOn:[
+  //   storageAccount
+  //   functionAppProductionSlot
+  // ]
 }
