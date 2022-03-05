@@ -26,14 +26,6 @@ resource stg 'Microsoft.Storage/storageAccounts@2021-02-01' = {
   }
 }
 
-// resource queueService 'Microsoft.Storage/storageAccounts/queueServices@2021-08-01' = if (!empty(queueArray)) {
-//   name:'default'    
-//   parent:stg
-//   resource queue 'queues' = [for q in queueArray: {
-//     name:q
-//   }]
-// }
-
 resource queueService 'Microsoft.Storage/storageAccounts/queueServices@2021-08-01' = if (!empty(queueArray)) {
   name: '${name}/default'
   dependsOn: [
@@ -53,12 +45,3 @@ resource blobService 'Microsoft.Storage/storageAccounts/blobServices@2021-08-01'
     name: c
   }]
 }
-
-// resource queueServices 'Microsoft.Storage/storageAccounts/queueServices@2021-08-01' = if(!empty(queues)){
-//   name:'default'  
-//   parent:stg
-// }
-
-// resource queue 'Microsoft.Storage/storageAccounts/queueServices/queues@2021-08-01' = if(!empty(queues)) = [for q in queues: {
-
-// }]
