@@ -32,7 +32,7 @@ resource stg 'Microsoft.Storage/storageAccounts@2021-02-01' = {
   }
   resource blobService 'blobServices' = if (!empty(containerArray)) {
     name:'default'    
-    resource queue 'containers' = [for container in containerArray:{
+    resource blob 'containers' = [for container in containerArray:{
       name: trim(container)
     }]
   }
