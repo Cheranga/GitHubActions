@@ -3,8 +3,8 @@ param location string = resourceGroup().location
 param queues string
 param blobContainers string
 
-var queueArray = split(queues, ',')
-var containerArray = split(blobContainers, ',')
+var queueArray = empty(queues)? [] : split(queues, ',')
+var containerArray = empty(blobContainers)? [] : split(blobContainers, ',')
 
 @allowed([
   'nonprod'
