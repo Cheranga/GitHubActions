@@ -89,7 +89,7 @@ resource functionAppStagingSlot 'Microsoft.Web/sites/slots@2021-03-01' = {
 
 // Function app settings
 resource productionSlotAppSettings 'Microsoft.Web/sites/config@2021-02-01' = {
-  name: '${sanitizedFuncAppName}/appsettings'
+  name: sanitizedFuncAppName
   properties:{    
     AzureWebJobsStorage__accountName: storageAccount.name    
   }
@@ -99,7 +99,7 @@ resource productionSlotAppSettings 'Microsoft.Web/sites/config@2021-02-01' = {
 }
 
 resource stagingSlotAppSettings 'Microsoft.Web/sites/slots/config@2021-02-01'= {
-  name: '${sanitizedFuncAppName}/Staging/appsettings'
+  name: '${sanitizedFuncAppName}/Staging'
   properties:{    
     AzureWebJobsStorage__accountName: storageAccount.name
     WEBSITE_CONTENTAZUREFILECONNECTIONSTRING: '@Microsoft.KeyVault(SecretUri=https://${keyVault.name}.vault.azure.net/secrets/storageAccountConnectionString/)'
