@@ -27,7 +27,7 @@ resource stg 'Microsoft.Storage/storageAccounts@2021-02-01' = {
   sku: {
     name: storageSku[storageType]
   }  
-  resource queueService 'queueServices' = if (!empty(queues)) {
+  resource queueService 'queueServices' = if (!empty(queueArray)) {
     name:'default'    
     resource queue 'queues' = [for q in queueArray:{
       name: q
