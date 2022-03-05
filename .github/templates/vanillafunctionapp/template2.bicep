@@ -125,8 +125,6 @@ resource stagingSlotAppSettings 'Microsoft.Web/sites/slots/config@2021-02-01'= {
   name: '${sanitizedFuncAppName}/Staging/appsettings'
   properties:{    
     AzureWebJobsStorage__accountName: storageAccount.name
-    WEBSITE_CONTENTAZUREFILECONNECTIONSTRING: '@Microsoft.KeyVault(SecretUri=https://${keyVault.name}.vault.azure.net/secrets/storageAccountConnectionString/)'
-    WEBSITE_CONTENTSHARE: toLower(sanitizedFuncAppName)
     FUNCTIONS_EXTENSION_VERSION: '~4'
     APPINSIGHTS_INSTRUMENTATIONKEY: '@Microsoft.KeyVault(SecretUri=https://${keyVault.name}.vault.azure.net/secrets/appInsightsKey/)'
     FUNCTIONS_WORKER_RUNTIME: 'dotnet'
