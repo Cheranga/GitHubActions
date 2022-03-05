@@ -9,6 +9,7 @@ var settings = json(appSettings).settings
 // Get the existing function app
 resource functionAppResource 'Microsoft.Web/sites/config@2021-03-01' existing = {
   name: '${functionAppName}/appsettings'
+  scope:resourceGroup()
 }
   
 
@@ -30,7 +31,7 @@ module mergeAppSettings 'appsettings.bicep' = {
   name: '${functionAppName}-merge-settings'
   params: {
     appSettings: additionalAppSettings.properties.siteConfig
-    currentAppSettings: functionAppResource
+    currentAppSettings: functionAppResource.properties
     functionAppName: functionAppName
   }
 }
