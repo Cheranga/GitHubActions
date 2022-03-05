@@ -207,7 +207,6 @@ resource storageBlobDataOwnerProductionAssignment 'Microsoft.Authorization/roleA
   dependsOn:[
     storageAccount
     functionAppProductionSlot
-    productionSlotSpecificAppSettings
   ]
 }
 
