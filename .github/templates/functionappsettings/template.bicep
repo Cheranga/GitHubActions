@@ -20,8 +20,7 @@ param appSettings string
 //   }
 // }
 
-var sensitiveSettings = json(appSettings).sensitive
-var nonSensitiveSettings = json(appSettings).nonsensitive
+var settings = json(appSettings).settings
 
 resource nonSensitiveSettingsInSlot 'Microsoft.Web/sites/slots@2021-01-15' = {
   name: '${functionAppName}/Staging'
@@ -29,27 +28,10 @@ resource nonSensitiveSettingsInSlot 'Microsoft.Web/sites/slots@2021-01-15' = {
   kind:'functionapp'  
   properties: {    
     siteConfig: {
-      appSettings: [for item in nonSensitiveSettings: {
+      appSettings: [for item in settings: {
         name: '${item.name}'
-        value: '${item.value}'
+        value: item.kvName == ''? item.value : '@Microsoft.KeyVault(SecretUri=https://${item.kvName}.vault.azure.net/secrets/${item.secretName}/)'
       }]
     }
   }
-}
-
-resource sensitiveSettingsInSlot 'Microsoft.Web/sites/slots@2021-01-15' = {
-  name: '${functionAppName}/Staging'
-  location: location
-  kind:'functionapp'  
-  properties: {    
-    siteConfig: {
-      appSettings: [for item in sensitiveSettings: {
-        name: '${item.name}'
-        value: '@Microsoft.KeyVault(SecretUri=https://${item.kvName}.vault.azure.net/secrets/${item.secretName}/)'
-      }]
-    }
-  }
-  dependsOn:[
-    nonSensitiveSettingsInSlot
-  ]
 }
