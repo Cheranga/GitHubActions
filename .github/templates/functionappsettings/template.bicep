@@ -22,7 +22,7 @@ param appSettings string
 
 var settings = json(appSettings).settings
 
-resource nonSensitiveSettingsInSlot 'Microsoft.Web/sites/slots@2021-01-15' = {
+resource nonSensitiveSettingsInSlot 'Microsoft.Web/sites/slots@2021-01-15' = if (!empty(settings)) {
   name: '${functionAppName}/Staging'
   location: location
   kind:'functionapp'  
