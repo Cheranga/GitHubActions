@@ -14,11 +14,6 @@ var storageSku = {
   prod: 'Standard_GRS'
 }
 
-var storageSkuTier = {
-  nonprod: 'Standard'
-  prod:'Premium'
-}
-
 var planSku = {
   nonprod: 'Y1'
   prod: 'Y1'
@@ -38,8 +33,7 @@ resource storageAccount 'Microsoft.Storage/storageAccounts@2021-02-01' = {
   location: location
   kind: 'StorageV2'
   sku: {
-    name: storageSku[category]
-    tier: storageSkuTier[category]
+    name: storageSku[category]    
   }  
 }
 
@@ -182,7 +176,7 @@ resource appInsightsKeySecret 'Microsoft.KeyVault/vaults/secrets@2021-06-01-prev
 // Assigning RBAC
 resource storageBlobDataOwnerDefinition 'Microsoft.Authorization/roleDefinitions@2018-01-01-preview' existing = {
   scope: subscription()
-  name: 'b7e6dc6d-f1e8-4753-8033-0f276bb0955b'
+  name: 'b7e6dc6d-f1e8-4753-8033-0f276bb0955b'  
 }
 
 resource storageBlobDataOwnerProductionAssignment 'Microsoft.Authorization/roleAssignments@2020-04-01-preview' = {
@@ -192,7 +186,11 @@ resource storageBlobDataOwnerProductionAssignment 'Microsoft.Authorization/roleA
     roleDefinitionId: storageBlobDataOwnerDefinition.id
     principalId: functionAppProductionSlot.identity.principalId
     principalType: 'ServicePrincipal'
-  }  
+  }
+  dependsOn:[
+    storageAccount
+    functionAppProductionSlot
+  ]
 }
 
 resource storageBlobDataOwnerStagingAssignment 'Microsoft.Authorization/roleAssignments@2020-04-01-preview' = {
@@ -202,5 +200,9 @@ resource storageBlobDataOwnerStagingAssignment 'Microsoft.Authorization/roleAssi
     roleDefinitionId: storageBlobDataOwnerDefinition.id
     principalId: functionAppStagingSlot.identity.principalId
     principalType: 'ServicePrincipal'
-  }  
+  }
+  dependsOn:[
+    storageAccount
+    functionAppStagingSlot
+  ]
 }
