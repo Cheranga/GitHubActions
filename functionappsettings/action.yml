@@ -37,7 +37,7 @@ runs:
           failOnStdErr: false
           deploymentName: ${{ inputs.deploymentName }}
           resourceGroupName: ${{ inputs.resourceGroupName }}
-          template: ./.github/templates/functionappsettings/template.bicep
+          template: ./.github/templates/functionappsettings/template2.bicep
           parameters: >
              functionAppName=${{ inputs.functionAppName }} 
              location=${{ inputs.location }} 
