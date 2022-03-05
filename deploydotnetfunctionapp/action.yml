@@ -48,4 +48,4 @@ runs:
       with:
         app-name: ${{ inputs.functionAppName }}
         package: '${{ env.PackagePath }}/funcapp'
-        slot-name: Staging
+        # slot-name: Staging
