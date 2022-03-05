@@ -108,8 +108,7 @@ resource productionSlotSpecificAppSettings 'Microsoft.Web/sites/config@2021-02-0
   name: '${sanitizedFuncAppName}/slotconfignames'
   properties:{        
     appSettingNames:[
-      'AzureWebJobsStorage__accountName'
-      'WEBSITE_CONTENTAZUREFILECONNECTIONSTRING'
+      'AzureWebJobsStorage__accountName'      
       'WEBSITE_CONTENTSHARE'
       'FUNCTIONS_EXTENSION_VERSION'
       'APPINSIGHTS_INSTRUMENTATIONKEY'
