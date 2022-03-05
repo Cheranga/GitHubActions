@@ -49,4 +49,4 @@ runs:
              name=${{ inputs.name }}
              location=${{ inputs.location }}
              storageType=${{ inputs.storageType }}
-             queues= ${{inputs.queues}}
+             queues=${{inputs.queues}}
