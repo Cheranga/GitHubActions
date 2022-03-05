@@ -30,7 +30,7 @@ resource stg 'Microsoft.Storage/storageAccounts@2021-02-01' = {
   resource queueService 'queueServices' = if (!empty(queueArray)) {
     name:'default'    
     resource queue 'queues' = [for q in queueArray:{
-      name: q
+      name: trim(q)
     }]
   }
 }
