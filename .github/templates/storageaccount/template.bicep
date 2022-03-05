@@ -26,3 +26,7 @@ resource stg 'Microsoft.Storage/storageAccounts@2021-02-01' = {
     tier: storageTier[storageType]
   }
 }
+
+resource queue 'Microsoft.Storage/storageAccounts/queueServices@2021-08-01' = {
+  name: '${name}/aaa'  
+}
