@@ -28,5 +28,8 @@ resource stg 'Microsoft.Storage/storageAccounts@2021-02-01' = {
 }
 
 resource queue 'Microsoft.Storage/storageAccounts/queueServices@2021-08-01' = {
-  name: '${name}/aaa'  
+  name: '${name}/aaa' 
+  dependsOn:[
+    stg
+  ] 
 }
