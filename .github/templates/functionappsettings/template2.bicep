@@ -30,7 +30,7 @@ module mergeAppSettings 'appsettings.bicep' = {
   name: '${functionAppName}-merge-settings'
   params: {
     appSettings: additionalAppSettings.properties.siteConfig
-    currentAppSettings: functionAppResource.properties.siteConfig
+    currentAppSettings: functionAppResource.properties
     functionAppName: functionAppName
   }
 }
