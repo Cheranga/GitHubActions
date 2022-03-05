@@ -45,3 +45,4 @@ runs:
              name=${{ inputs.name }}
              location=${{ inputs.location }}
              storageType=${{ inputs.storageType }}
+             queues= 'xxx,yyy,zzz'
