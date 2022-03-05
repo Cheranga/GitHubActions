@@ -21,6 +21,10 @@ inputs:
     description: 'The type of the storage account. Allowed values are "nonprod" and "prod"'
     required: true    
     default: 'nonprod'  
+  queues:
+    description: 'The queues'
+    required: false
+    
 runs:
   using: 'composite'
   steps:  
