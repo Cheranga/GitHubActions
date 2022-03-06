@@ -90,7 +90,10 @@ resource productionSlotAppSettings 'Microsoft.Web/sites/config@2021-02-01' = {
     FUNCTIONS_WORKER_RUNTIME: 'dotnet'
     WEBSITE_TIME_ZONE: timeZone
     WEBSITE_ADD_SITENAME_BINDINGS_IN_APPHOST_CONFIG: 1
-  }  
+  }
+  dependsOn:[
+    functionAppProductionSlot
+  ]  
 }
 
 // Keyvault with access policies to the function app
