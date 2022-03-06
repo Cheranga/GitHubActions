@@ -21,6 +21,7 @@ resource functionAppResource 'Microsoft.Web/sites@2021-03-01' existing = {
 }
 
 
+
 var test = {
   a: 'a'
   b: 'b'
