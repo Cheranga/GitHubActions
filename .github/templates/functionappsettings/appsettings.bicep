@@ -40,13 +40,34 @@ var additionalSettingsObject = [for item in additionalSettings: {
   '${item.name}': item.value
 }]
 
-resource settings 'Microsoft.Web/sites/config@2021-03-01' = {
+var settingsArray = [
+  {
+    name: 'HotelCancellationQueue'
+    value: 'hotel-cancellations'
+  }
+  {
+    name: 'QueueSource__queueServiceUri'
+    value: 'https://sgccfunkyhotelsdev.queue.core.windows.net'
+  }  
+]
+
+var objectArray = [for item in settingsArray:{
+  '${item.name}': item.value
+}]
+
+resource settings 'Microsoft.Web/sites/config@2021-03-01' = [for item in objectArray:{
   name: '${functionAppName}/appsettings'
-  properties:union(existingSettings, {
-    a: 'b'
-    c: 'd'
-  })
-}
+  properties:union(existingSettings, item)
+}]
+
+
+// resource settings 'Microsoft.Web/sites/config@2021-03-01' = {
+//   name: '${functionAppName}/appsettings'
+//   properties:union(existingSettings, {
+//     a: 'b'
+//     c: 'd'
+//   })
+// }
 
 // resource aaa 'Microsoft.Web/sites/config@2021-03-01' = [for item in additionalSettingsObject:{
 //   name: '${functionAppName}/appsettings'
