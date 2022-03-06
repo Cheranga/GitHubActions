@@ -2,7 +2,12 @@ param functionAppName string
 // param currentAppSettings object
 // param appSettings object
 
-param existingSettings array
+param existingSettings object
+
+var existingArray = [for item in existingSettings.properties:{
+  name: item.name
+  value: item.value
+}]
 
 var testSettings = {
   appSettings: [
@@ -43,7 +48,16 @@ var test = {
 //   c: 'c'
 // }
 
-var combined = union(existingSettings, test.siteConfig.appSettings)
+var combined = union(existingArray, [
+  {
+    name: 'a'
+    value: 'b'
+  }
+  {
+    name: 'c'
+    value: 'd'
+  }
+])
 
 
 
