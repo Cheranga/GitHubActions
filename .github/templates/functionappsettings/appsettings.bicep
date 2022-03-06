@@ -23,9 +23,19 @@ resource functionAppResource 'Microsoft.Web/sites@2021-03-01' existing = {
 
 
 var test = {
-  a: 'a'
-  b: 'b'
-  c: 'c'
+  siteConfig:{
+    appSettings:[
+      {
+        name: 'a'
+        value: 'b'
+      }
+      {
+        name: 'c'
+        value: 'd'
+      }      
+    ]
+  }
+  
 }
 
 resource siteconfig 'Microsoft.Web/sites/config@2021-03-01' = {
