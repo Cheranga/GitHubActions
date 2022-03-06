@@ -7,10 +7,15 @@ param friendlyName string
 param accessibility string
 
 @secure()
-param servicePrincipalId string
+param functionAppName string
 
 var roleDefinitions = {
   queue_read_write: '974c5e8b-45b9-4653-ba55-5f855dd0fb88' //  storage queue data contributor
+}
+
+resource app 'Microsoft.Web/sites@2021-03-01' existing = {
+  name: functionAppName
+  scope:resourceGroup()
 }
 
 resource role 'Microsoft.Authorization/roleDefinitions@2018-01-01-preview' existing = {
@@ -28,7 +33,7 @@ resource roleAssignment 'Microsoft.Authorization/roleAssignments@2020-04-01-prev
   scope:storageAccount
   properties: {
     roleDefinitionId: role.id
-    principalId: servicePrincipalId
+    principalId: app.identity.principalId
     principalType: 'ServicePrincipal'
   }  
 }

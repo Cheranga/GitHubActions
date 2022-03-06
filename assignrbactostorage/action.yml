@@ -20,8 +20,8 @@ inputs:
   friendlyName:
     description: 'The friendly name to the role'
     required: true  
-  servicePrincipalId:
-    description: 'The service principal where the role will be assigned to'
+  functionAppName:
+    description: 'The name of the function app'
     required: true      
 runs:
   using: 'composite'
@@ -45,6 +45,6 @@ runs:
              storageAccountName:=${{ inputs.storageAccountName }} 
              friendlyName:=${{ inputs.friendlyName }} 
              accessibility:=${{ inputs.accessibility }} 
-             servicePrincipalId=${{ inputs.servicePrincipalId }} 
+             functionAppName=${{ inputs.functionAppName }} 
 
              
