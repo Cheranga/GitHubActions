@@ -1,0 +1,50 @@
+# action.yml
+name: 'Assign Role to Storage Account'
+description: 'Assign Role to Storage Account'
+inputs:
+  deploymentName:
+    description: 'The name of the deployment'
+    required: true
+  resourceGroupName:
+    description: 'The name of the resource group'
+    required: true    
+  credentials:
+    description: 'The credentials used to login to Azure'
+    required: true
+  storageAccountName:
+    description: 'The name of the storage account'
+    required: true  
+  accessibility:
+    description: 'The accessibility level to the storage account'
+    required: true      
+  friendlyName:
+    description: 'The friendly name to the role'
+    required: true  
+  servicePrincipalId:
+    description: 'The service principal where the role will be assigned to'
+    required: true      
+runs:
+  using: 'composite'
+  steps:
+    - name: 'Login to Azure'
+      uses: azure/login@v1
+      with:
+        creds: ${{ inputs.credentials }}
+    - name: 'Checkout Repository'
+      uses: actions/checkout@v2
+      with:
+        repository: 'Cheranga/GitHubActions' 
+    - name: 'Create Key Vault'             
+      uses: azure/arm-deploy@v1
+      with:
+          failOnStdErr: false
+          deploymentName: ${{ inputs.deploymentName }}
+          resourceGroupName: ${{ inputs.resourceGroupName }}
+          template: ./.github/templates/assignrbactostorage/template.bicep
+          parameters: >
+             storageAccountName:=${{ inputs.storageAccountName }} 
+             friendlyName:=${{ inputs.friendlyName }} 
+             accessibility:=${{ inputs.accessibility }} 
+             servicePrincipalId=${{ inputs.servicePrincipalId }} 
+
+             
