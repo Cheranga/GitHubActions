@@ -1,6 +1,8 @@
 param functionAppName string
-param currentAppSettings object
+// param currentAppSettings object
 // param appSettings object
+
+param existingSettings array
 
 var testSettings = {
   appSettings: [
@@ -32,10 +34,8 @@ var test = {
         value: 'd'
       }      
     ]
-  }
-  
+  }  
 }
-
 
 // var test = {
 //   a: 'a'
@@ -43,12 +43,24 @@ var test = {
 //   c: 'c'
 // }
 
+var combined = union(existingSettings, test.siteConfig.appSettings)
 
 
-resource siteconfig 'Microsoft.Web/sites/config@2021-03-01' = {
+
+
+resource siteconfig 'Microsoft.Web/sites/config@2021-03-01' = [for item in combined:{
   name: '${functionAppName}/appsettings'
-  properties: union(functionAppResource.properties.siteConfig, test)
-}
+  properties:{
+    '${item.name}': item.value
+  }
+}]
+
+// resource siteconfig 'Microsoft.Web/sites/config@2021-03-01' = {
+//   name: '${functionAppName}/appsettings'
+//   properties: [for item in combined:{
+//     '${item.name}': ${item.value}
+//   }]
+// }
 
 
 // resource testSite 'Microsoft.Web/sites@2021-03-01' = {
@@ -69,3 +81,4 @@ resource siteconfig 'Microsoft.Web/sites/config@2021-03-01' = {
 //     }
 //   }
 // }
+
