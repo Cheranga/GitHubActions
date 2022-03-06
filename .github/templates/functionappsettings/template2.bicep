@@ -29,7 +29,7 @@ resource functionAppResource 'Microsoft.Web/sites@2021-03-01' existing = {
 module mergeAppSettings 'appsettings.bicep' = {
   name: '${functionAppName}-merge-settings'
   params: {    
-    existingSettings: list('${functionAppResource.id}/config','2020-12-01').appSettings
+    existingSettings: list('${functionAppResource.id}/config','2020-12-01').properties
     // currentAppSettings: [for item in functionAppResource.properties.siteConfig.appSettings:{
     //   name: item.name
     //   value: item.value
