@@ -40,10 +40,18 @@ var additionalSettingsObject = [for item in additionalSettings: {
   '${item.name}': item.value
 }]
 
-resource aaa 'Microsoft.Web/sites/config@2021-03-01' = [for item in additionalSettingsObject:{
+resource settings 'Microsoft.Web/sites/config@2021-03-01' = {
   name: '${functionAppName}/appsettings'
-  properties: union(existingSettings, item)
-}]
+  properties:union(existingSettings, {
+    a: 'b'
+    c: 'd'
+  })
+}
+
+// resource aaa 'Microsoft.Web/sites/config@2021-03-01' = [for item in additionalSettingsObject:{
+//   name: '${functionAppName}/appsettings'
+//   properties: union(existingSettings, item)
+// }]
 
 
 
