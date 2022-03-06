@@ -3,6 +3,7 @@ param functionAppName string
 // param appSettings object
 
 param existingSettings object
+param additionalSettings object
 
 // var existingArray = [for item in existingSettings.properties:{
 //   name: item.name
@@ -14,16 +15,16 @@ resource functionAppResource 'Microsoft.Web/sites@2021-03-01' existing = {
   name: functionAppName
 }
 
-var additionalSettings = [
-  {
-    name: 'a'
-    value: 'b'
-  }
-  {
-    name: 'c'
-    value: 'd'
-  }  
-]
+// var additionalSettings = [
+//   {
+//     name: 'a'
+//     value: 'b'
+//   }
+//   {
+//     name: 'c'
+//     value: 'd'
+//   }  
+// ]
 
 // var combined = union(functionAppResource.properties.siteConfig.appSettings, [
 //   {
@@ -36,38 +37,30 @@ var additionalSettings = [
 //   }
 // ])
 
-var additionalSettingsObject = [for item in additionalSettings: {
-  '${item.name}': item.value
-}]
+// var additionalSettingsObject = [for item in additionalSettings: {
+//   '${item.name}': item.value
+// }]
 
-var settingsArray = [
-  {
-    name: 'HotelCancellationQueue'
-    value: 'hotel-cancellations'
-  }
-  {
-    name: 'QueueSource__queueServiceUri'
-    value: 'https://sgccfunkyhotelsdev.queue.core.windows.net'
-  }  
-]
+// var settingsArray = [
+//   {
+//     name: 'HotelCancellationQueue'
+//     value: 'hotel-cancellations'
+//   }
+//   {
+//     name: 'QueueSource__queueServiceUri'
+//     value: 'https://sgccfunkyhotelsdev.queue.core.windows.net'
+//   }  
+// ]
 
-var objectArray = [for item in settingsArray:{
-  '${item.name}': item.value
-}]
+// var objectArray = [for item in settingsArray:{
+//   '${item.name}': item.value
+// }]
 
-resource settings 'Microsoft.Web/sites/config@2021-03-01' = [for item in objectArray:{
+
+resource settings 'Microsoft.Web/sites/config@2021-03-01' = {
   name: '${functionAppName}/appsettings'
-  properties:union(existingSettings, item)
-}]
-
-
-// resource settings 'Microsoft.Web/sites/config@2021-03-01' = {
-//   name: '${functionAppName}/appsettings'
-//   properties:union(existingSettings, {
-//     a: 'b'
-//     c: 'd'
-//   })
-// }
+  properties:union(existingSettings, additionalSettings)
+}
 
 // resource aaa 'Microsoft.Web/sites/config@2021-03-01' = [for item in additionalSettingsObject:{
 //   name: '${functionAppName}/appsettings'
