@@ -1,5 +1,5 @@
 param functionAppName string
-// param currentAppSettings object 
+param currentAppSettings object 
 // param appSettings object
 
 var testSettings = {
@@ -20,20 +20,24 @@ resource functionAppResource 'Microsoft.Web/sites@2021-03-01' existing = {
   name:functionAppName
 }
 
+var test = {
+  appsettings:[
+    {
+      name: 'a'
+      value: 'b'
+    }
+    {
+      name: 'c'
+      value: 'd'
+    }
+    {
+      name: 'e'
+      value: 'f'
+    }
+  ]
+}
+
 resource siteconfig 'Microsoft.Web/sites/config@2021-03-01' = {
   name: '${functionAppName}/appsettings'
-  properties: union(functionAppResource.properties, {
-    siteConfig:{
-      appSettings:[
-        {
-          name: 'a'
-          value: 'b'
-        }
-        {
-          name: 'c'
-          value: 'd'
-        }
-      ]
-    }
-  })
+  properties: union(currentAppSettings,test)
 }
