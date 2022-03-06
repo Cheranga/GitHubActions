@@ -41,10 +41,10 @@ runs:
           deploymentName: ${{ inputs.deploymentName }}
           resourceGroupName: ${{ inputs.resourceGroupName }}
           template: ./.github/templates/assignrbactostorage/template.bicep
-          parameters: >
-             storageAccountName:=${{ inputs.storageAccountName }} 
-             friendlyName:=${{ inputs.friendlyName }} 
-             accessibility:=${{ inputs.accessibility }} 
+          parameters: >             
+             friendlyName=${{ inputs.friendlyName }} 
+             accessibility=${{ inputs.accessibility }} 
              functionAppName=${{ inputs.functionAppName }} 
+             storageAccountName=${{ inputs.storageAccountName }} 
 
              
