@@ -20,52 +20,52 @@ resource functionAppResource 'Microsoft.Web/sites@2021-03-01' existing = {
   name: functionAppName
 }
 
-// var test = {
-//   siteConfig:{
-//     appSettings:[
-//       {
-//         name: 'a'
-//         value: 'b'
-//       }
-//       {
-//         name: 'c'
-//         value: 'd'
-//       }      
-//     ]
-//   }
-  
-// }
-
-
 var test = {
-  a: 'a'
-  b: 'b'
-  c: 'c'
+  siteConfig:{
+    appSettings:[
+      {
+        name: 'a'
+        value: 'b'
+      }
+      {
+        name: 'c'
+        value: 'd'
+      }      
+    ]
+  }
+  
 }
 
 
-
-// resource siteconfig 'Microsoft.Web/sites/config@2021-03-01' = {
-//   name: '${functionAppName}/appsettings'
-//   properties: union(currentAppSettings, test)
+// var test = {
+//   a: 'a'
+//   b: 'b'
+//   c: 'c'
 // }
 
 
-resource testSite 'Microsoft.Web/sites@2021-03-01' = {
-  name: functionAppName
-  location: resourceGroup().location
-  properties:{
-    siteConfig:{
-      appSettings:[
-        {
-          name:'a'
-          value:'b'
-        }
-        {
-          name:'c'
-          value:'d'
-        }
-      ]
-    }
-  }
+
+resource siteconfig 'Microsoft.Web/sites/config@2021-03-01' = {
+  name: '${functionAppName}/appsettings'
+  properties: union(functionAppResource.properties.siteConfig, test)
 }
+
+
+// resource testSite 'Microsoft.Web/sites@2021-03-01' = {
+//   name: functionAppName
+//   location: resourceGroup().location
+//   properties:{
+//     siteConfig:{
+//       appSettings:[
+//         {
+//           name:'a'
+//           value:'b'
+//         }
+//         {
+//           name:'c'
+//           value:'d'
+//         }
+//       ]
+//     }
+//   }
+// }
