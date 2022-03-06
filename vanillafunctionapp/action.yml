@@ -49,7 +49,7 @@ runs:
           failOnStdErr: false
           deploymentName: ${{ inputs.deploymentName }}
           resourceGroupName: ${{ inputs.resourceGroupName }}
-          template: ./.github/templates/vanillafunctionapp/template4.bicep
+          template: ./.github/templates/vanillafunctionapp/template3.bicep
           parameters: >
              envName=${{ inputs.environmentName }}
              funcAppName=${{ inputs.functionAppName }}
