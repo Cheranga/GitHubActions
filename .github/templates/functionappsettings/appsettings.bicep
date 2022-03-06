@@ -43,7 +43,29 @@ var test = {
   c: 'c'
 }
 
-resource siteconfig 'Microsoft.Web/sites/config@2021-03-01' = {
-  name: '${functionAppName}/appsettings'
-  properties: union(currentAppSettings, test)
+
+
+// resource siteconfig 'Microsoft.Web/sites/config@2021-03-01' = {
+//   name: '${functionAppName}/appsettings'
+//   properties: union(currentAppSettings, test)
+// }
+
+
+resource testSite 'Microsoft.Web/sites@2021-03-01' = {
+  name: functionAppName
+  location: resourceGroup().location
+  properties:{
+    siteConfig:{
+      appSettings:[
+        {
+          name:'a'
+          value:'b'
+        }
+        {
+          name:'c'
+          value:'d'
+        }
+      ]
+    }
+  }
 }
