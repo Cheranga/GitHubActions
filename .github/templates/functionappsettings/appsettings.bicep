@@ -20,22 +20,27 @@ resource functionAppResource 'Microsoft.Web/sites@2021-03-01' existing = {
   name: functionAppName
 }
 
+// var test = {
+//   siteConfig:{
+//     appSettings:[
+//       {
+//         name: 'a'
+//         value: 'b'
+//       }
+//       {
+//         name: 'c'
+//         value: 'd'
+//       }      
+//     ]
+//   }
+  
+// }
 
 
 var test = {
-  siteConfig:{
-    appSettings:[
-      {
-        name: 'a'
-        value: 'b'
-      }
-      {
-        name: 'c'
-        value: 'd'
-      }      
-    ]
-  }
-  
+  a: 'a'
+  b: 'b'
+  c: 'c'
 }
 
 resource siteconfig 'Microsoft.Web/sites/config@2021-03-01' = {
