@@ -4,51 +4,17 @@ param functionAppName string
 
 param existingSettings object
 
-var existingArray = [for item in existingSettings.properties:{
-  name: item.name
-  value: item.value
-}]
-
-var testSettings = {
-  appSettings: [
-    {
-      name: 'a'
-      value: 'b'
-    }
-    {
-      name: 'c'
-      value: 'd'
-    }
-  ]
-}
+// var existingArray = [for item in existingSettings.properties:{
+//   name: item.name
+//   value: item.value
+// }]
 
 resource functionAppResource 'Microsoft.Web/sites@2021-03-01' existing = {
   scope: resourceGroup()
   name: functionAppName
 }
 
-var test = {
-  siteConfig:{
-    appSettings:[
-      {
-        name: 'a'
-        value: 'b'
-      }
-      {
-        name: 'c'
-        value: 'd'
-      }      
-    ]
-  }  
-}
-
-// var test = {
-//   a: 'a'
-//   b: 'b'
-//   c: 'c'
-// }
-
-var combined = union(existingArray, [
+var additionalSettings = [
   {
     name: 'a'
     value: 'b'
@@ -56,18 +22,46 @@ var combined = union(existingArray, [
   {
     name: 'c'
     value: 'd'
-  }
-])
+  }  
+]
 
+// var combined = union(functionAppResource.properties.siteConfig.appSettings, [
+//   {
+//     name: 'a'
+//     value: 'b'
+//   }
+//   {
+//     name: 'c'
+//     value: 'd'
+//   }
+// ])
 
-
-
-resource siteconfig 'Microsoft.Web/sites/config@2021-03-01' = [for item in combined:{
-  name: '${functionAppName}/appsettings'
-  properties:{
-    '${item.name}': item.value
-  }
+var additionalSettingsObject = [for item in additionalSettings: {
+  '${item.name}': item.value
 }]
+
+resource aaa 'Microsoft.Web/sites/config@2021-03-01' = [for item in additionalSettingsObject:{
+  name: '${functionAppName}/appsettings'
+  properties: union(existingSettings, item)
+}]
+
+
+
+// resource siteconfig 'Microsoft.Web/sites/config@2021-03-01' = [for item in union(functionAppResource.properties.siteConfig.appSettings, [
+//   {
+//     name: 'a'
+//     value: 'b'
+//   }
+//   {
+//     name: 'c'
+//     value: 'd'
+//   }
+// ]):{
+//   name: '${functionAppName}/appsettings'
+//   properties:{
+//     '${item.name}': item.value
+//   }
+// }]
 
 // resource siteconfig 'Microsoft.Web/sites/config@2021-03-01' = {
 //   name: '${functionAppName}/appsettings'
