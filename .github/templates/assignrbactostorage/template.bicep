@@ -11,6 +11,7 @@ param functionAppName string
 
 var roleDefinitions = {
   queue_read_write: '974c5e8b-45b9-4653-ba55-5f855dd0fb88' //  storage queue data contributor
+  table_write: '0a9a7e1f-b9d0-4cc4-a60d-0319b160aaa3' //  Storage Table Data Contributor
 }
 
 resource app 'Microsoft.Web/sites@2021-03-01' existing = {
