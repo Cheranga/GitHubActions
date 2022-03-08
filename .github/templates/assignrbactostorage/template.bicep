@@ -3,6 +3,7 @@ param friendlyName string
 
 @allowed([
   'queue_read_write'
+  'table_write'
 ])
 param accessibility string
 
