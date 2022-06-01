@@ -25,12 +25,15 @@ runs:
         dotnet-version: ${{ inputs.dotnetVersion }}
 
     - name: Restore projects
+      uses: shell
       run: dotnet restore
 
     - name: Build Projects
+      uses: shell
       run: dotnet build --no-restore -c Release      
 
     - name: Publish
+      uses: shell
       run: dotnet publish -c Release --no-build ${{ inputs.projectName }}/${{ inputs.projectName }}.csproj -o ${{ inputs.artifactName }}      
 
     - name: Publish Artifact - API
