@@ -32,6 +32,9 @@ runs:
               echo "Azure resource group created"
             fi
     - name: logout     
-      run: |
-            az logout
-      if: always()
+      uses: Azure/CLI@v1
+      with:
+        inlineScript:
+          az logout
+          az cache purge
+          az account clear
