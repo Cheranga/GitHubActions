@@ -1,0 +1,55 @@
+# action.yml
+name: Deploy the Web App
+description: Deploy the web app to the resource group
+inputs:
+  subscriptionId:
+    description: The subscription id
+    required: true
+  credentials:
+    description: 'The credentials used to login to Azure'
+    required: true
+  resourceGroupName:
+    description: 'The name of the resource group'
+    required: true
+  webAppArtifactName:
+    description: The name of the artifact which is the web app
+    required: true        
+  webAppName:
+    description: The name of the web app
+    required: true    
+  location:
+    description: 'The location where resource group needs to be created in'
+    required: true
+    default: 'australiasoutheast'    
+runs:
+  using: 'composite'
+  steps:
+    - name: 'Login to Azure'
+      uses: azure/login@v1
+      with:
+        creds: ${{ inputs.credentials }}
+    - name: Start Staging Slot
+      shell: bash
+      run: |
+          az resource invoke-action --action start --ids  /subscriptions/${{ inputs.subscriptionId }}/resourceGroups/${{ inputs.resourceGroupName }}/providers/Microsoft.Web/sites/${{ inputs.webAppName }}/slots/staging
+    - name: Deploy web app      
+      uses: azure/webapps-deploy@v2
+      with:
+        app-name: ${{ inputs.webAppName }}
+        slot-name: staging
+        package: ${{ inputs.webAppArtifactName }}           
+    - name: Swap staging slot into production        
+      shell: bash
+      run: |
+          az webapp deployment slot swap -g ${{ inputs.resourceGroupName }} -n ${{ inputs.webAppName }} -s staging
+          url=$(az webapp show -g ${{ inputs.resourceGroupName }} -n ${{ inputs.webAppName }} --query "defaultHostName" -o tsv)
+          echo "::set-output name=url::https://$url"        
+    - name: Stop Staging Slot
+      shell: bash
+      run: |
+          az resource invoke-action --action stop --ids  /subscriptions/${{ inputs.subscriptionId }}/resourceGroups/${{ inputs.resourceGroupName }}/providers/Microsoft.Web/sites/${{ inputs.webAppName }}/slots/staging          
+    - name: logout     
+      uses: Azure/CLI@v1
+      with:
+        inlineScript:
+          az logout
