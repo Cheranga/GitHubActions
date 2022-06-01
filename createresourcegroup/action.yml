@@ -31,6 +31,7 @@ runs:
               az group create --name ${{ inputs.name }} --location ${{ inputs.location }}
               echo "Azure resource group created"
             fi
-    - name: az cli logout
-      uses: shell      
-      run: az logout            
+    - name: logout     
+      run: |
+            az logout
+      if: always()
