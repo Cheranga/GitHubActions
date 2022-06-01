@@ -32,6 +32,5 @@ runs:
               echo "Azure resource group created"
             fi
 
-    - name: az cli logout
-      uses: shell      
+    - name: az cli logout          
       run: az logout            
