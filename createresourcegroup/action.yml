@@ -25,9 +25,9 @@ runs:
       with:
         inlineScript: |
             #!/bin/bash            
-            if $(az group exists --name ${{ env.ResourceGroupName }}) ; then
+            if $(az group exists --name ${{ inputs.name }}) ; then
               echo "Azure resource group already exists, skipping creation..."
             else
-              az group create --name ${{ env.ResourceGroupName }} --location ${{ env.ResourceGroupLocation }}
+              az group create --name ${{ inputs.name }} --location ${{ inputs.location }}
               echo "Azure resource group created"
             fi
