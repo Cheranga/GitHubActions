@@ -1,0 +1,41 @@
+# action.yml
+name: Build-Tag-Push-To-DockerHub
+description: Build, tag, and publishes to DockerHub
+inputs:  
+  dockerUserName:
+    description: The username in DockerHub
+    required: true
+    default: '6.0.x'  
+  dockerPassword:
+    description: The password to login to DockerHub
+    required: true 
+  dockerFilePath:
+    description: The path to the docker file
+    required: true
+  imageName:
+    description: The name of the image
+    required: true  
+  imageTag:
+    description: The tag of the image
+    required: true    
+    default: 'Latest'
+runs:
+  using: 'composite'
+  steps:  
+    - name: Checkout
+      uses: actions/checkout@v2
+
+    - name: Login to Docker
+      shell: bash
+      run: |
+        docker login -u ${{inputs.dockerUserName}} -p ${{inputs.dockerPassword}}
+
+    - name: Build the Image
+      shell: bash
+      run: |
+        docker build -t ${{inputs.dockerUserName}}/${{inputs.imageName}}:${{inputs.imageTag}} --file ${{inputs.dockerFilePath}} .
+
+    - name: Push to DockerHub
+      shell: bash
+      run: |
+        docker push ${{inputs.dockerUserName}}/${{inputs.imageName}}:${{inputs.imageTag}}
