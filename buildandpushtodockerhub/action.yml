@@ -29,7 +29,7 @@ runs:
       uses: docker/login-action@v2
       with:
         username: ${{inputs.dockerUserName}}
-        password: ${inputs.dockerPassword}      
+        password: ${{inputs.dockerPassword}}
 
     - name: Build the Image
       shell: bash
