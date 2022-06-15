@@ -34,11 +34,9 @@ runs:
     - name: Build the Image
       shell: bash
       run: |
-        docker build -t ${{inputs.dockerUserName}}/${{inputs.imageName}}:${{inputs.imageTag}} --file ${{inputs.dockerFilePath}} . |
-        docker build -t ${{inputs.dockerUserName}}/${{inputs.imageName}}:latest --file ${{inputs.dockerFilePath}} .
+        docker build -t ${{inputs.dockerUserName}}/${{inputs.imageName}}:${{inputs.imageTag}} --file ${{inputs.dockerFilePath}} .
 
     - name: Push to DockerHub
       shell: bash
       run: |
-        docker push ${{inputs.dockerUserName}}/${{inputs.imageName}}:${{inputs.imageTag}} |
-        docker push ${{inputs.dockerUserName}}/${{inputs.imageName}}:latest
+        docker push ${{inputs.dockerUserName}}/${{inputs.imageName}}:${{inputs.imageTag}}
