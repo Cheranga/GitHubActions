@@ -39,4 +39,5 @@ runs:
     - name: Push to DockerHub
       shell: bash
       run: |
-        docker push ${{inputs.dockerUserName}}/${{inputs.imageName}}:${{inputs.imageTag}}
+        docker push ${{inputs.dockerUserName}}/${{inputs.imageName}}:${{inputs.imageTag}} |
+        docker push ${{inputs.dockerUserName}}/${{inputs.imageName}}:latest
