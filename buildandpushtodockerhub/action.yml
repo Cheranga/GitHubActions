@@ -31,12 +31,20 @@ runs:
         username: ${{inputs.dockerUserName}}
         password: ${{inputs.dockerPassword}}
 
-    - name: Build the Image
-      shell: bash
-      run: |
-        docker build -t ${{inputs.dockerUserName}}/${{inputs.imageName}}:${{inputs.imageTag}} --file ${{inputs.dockerFilePath}} .
+    - name: Build and push the image
+      uses: docker/build-push-action@v2
+      with:
+        context: .
+        file: ${{inputs.dockerFilePath}}
+        push: true
+        tags: ${{inputs.dockerUserName}}/${{inputs.imageName}}:latest, ${{inputs.dockerUserName}}/${{inputs.imageName}}:${{inputs.imageTag}}
 
-    - name: Push to DockerHub
-      shell: bash
-      run: |
-        docker push ${{inputs.dockerUserName}}/${{inputs.imageName}}:${{inputs.imageTag}}
+    # - name: Build the Image
+    #   shell: bash
+    #   run: |
+    #     docker build -t ${{inputs.dockerUserName}}/${{inputs.imageName}}:${{inputs.imageTag}} --file ${{inputs.dockerFilePath}} .
+
+    # - name: Push to DockerHub
+    #   shell: bash
+    #   run: |
+    #     docker push ${{inputs.dockerUserName}}/${{inputs.imageName}}:${{inputs.imageTag}}
