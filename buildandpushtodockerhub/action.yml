@@ -5,7 +5,6 @@ inputs:
   dockerUserName:
     description: The username in DockerHub
     required: true
-    default: '6.0.x'  
   dockerPassword:
     description: The password to login to DockerHub
     required: true 
