@@ -34,7 +34,7 @@ runs:
       
     - name: Test Projects
       shell: bash
-      run: dotnet test --verbosity normal
+      run: dotnet test
     
     - name: Publish
       shell: bash
