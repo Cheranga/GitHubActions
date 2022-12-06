@@ -1,0 +1,44 @@
+# action.yml
+name: Restore-Build-Test-Publish
+description: Restore, Build, test, and publishes artifact
+inputs:  
+  dotnetVersion:
+    description: 'The dotnet version the function is implemented'
+    required: true
+    default: '6.0.x'  
+  projectName:
+    description: The name of the project
+    required: true 
+  artifactName:
+    description: The name of the artifact
+    required: true
+    default: 'api'  
+runs:
+  using: 'composite'
+  steps:  
+    - name: Checkout
+      uses: actions/checkout@v2
+    
+    - name: Install .NET Core
+      uses: actions/setup-dotnet@v2
+      with:
+        dotnet-version: ${{ inputs.dotnetVersion }}
+
+    - name: Restore projects
+      shell: bash
+      run: dotnet restore
+
+    - name: Build Projects
+      shell: bash
+      run: dotnet build --no-restore -c Release      
+
+    - name: Publish
+      shell: bash
+      run: dotnet publish -c Release --no-build src/${{ inputs.projectName }}/${{ inputs.projectName }}.csproj -o ${{ inputs.artifactName }}      
+
+    - name: Publish Artifact - API
+      uses: actions/upload-artifact@v3
+      with:
+        name: ${{ inputs.artifactName }}
+        path: ${{ inputs.artifactName }}/**
+        if-no-files-found: error
