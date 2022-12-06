@@ -30,8 +30,12 @@ runs:
 
     - name: Build Projects
       shell: bash
-      run: dotnet build --no-restore -c Release      
-
+      run: dotnet build --no-restore -c Release  
+      
+    - name: Test Projects
+      shell: bash
+      run: dotnet test tests/**.csproj --no-build --no-restore
+    
     - name: Publish
       shell: bash
       run: dotnet publish -c Release --no-build src/${{ inputs.projectName }}/${{ inputs.projectName }}.csproj -o ${{ inputs.artifactName }}      
