@@ -31,7 +31,7 @@ var timeZone = 'AUS Eastern Standard Time'
 
 // Storage Account
 resource storageAccount 'Microsoft.Storage/storageAccounts@2021-02-01' = {
-  name: 'sg${sanitizedStorageName}'
+  name: 'sg${sanitizedStorageName}'  
   location: location
   kind: 'StorageV2'
   sku: {

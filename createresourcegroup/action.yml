@@ -31,8 +31,8 @@ runs:
               az group create --name ${{ inputs.name }} --location ${{ inputs.location }}
               echo "Azure resource group created"
             fi
-    - name: logout     
-      uses: Azure/CLI@v1
-      with:
-        inlineScript:
-          az logout
+    # - name: logout     
+    #   uses: Azure/CLI@v1
+    #   with:
+    #     inlineScript:
+    #       az logout
