@@ -140,23 +140,40 @@ resource appInsightsKeySecret 'Microsoft.KeyVault/vaults/secrets@2021-06-01-prev
   }  
 }
 
-// Getting the `Storage BLOB Data Owner` role in AAD
-resource storageBlobDataOwnerDefinition 'Microsoft.Authorization/roleDefinitions@2018-01-01-preview' existing = {
+// // Getting the `Storage BLOB Data Owner` role in AAD
+// resource storageBlobDataOwnerDefinition 'Microsoft.Authorization/roleDefinitions@2018-01-01-preview' existing = {
+//   scope: subscription()
+//   name: 'b7e6dc6d-f1e8-4753-8033-0f276bb0955b'  
+// }
+
+// // Assigning the `Storage BLOB Data Owner` role to the function app
+// resource storageBlobDataOwnerProductionAssignment 'Microsoft.Authorization/roleAssignments@2020-04-01-preview' = {
+//   name: guid(resourceGroup().id, 'productionSlot', storageBlobDataOwnerDefinition.id)
+//   scope:storageAccount
+//   properties: {
+//     roleDefinitionId: storageBlobDataOwnerDefinition.id
+//     principalId: functionAppProductionSlot.identity.principalId
+//     principalType: 'ServicePrincipal'
+//   }
+//   // dependsOn:[
+//   //   storageAccount
+//   //   functionAppProductionSlot
+//   // ]
+// }
+
+resource role 'Microsoft.Authorization/roleDefinitions@2018-01-01-preview' existing = {
   scope: subscription()
-  name: 'b7e6dc6d-f1e8-4753-8033-0f276bb0955b'  
+  name: 'b7e6dc6d-f1e8-4753-8033-0f276bb0955b'
 }
 
-// Assigning the `Storage BLOB Data Owner` role to the function app
-resource storageBlobDataOwnerProductionAssignment 'Microsoft.Authorization/roleAssignments@2020-04-01-preview' = {
-  name: guid(resourceGroup().id, 'productionSlot', storageBlobDataOwnerDefinition.id)
+
+
+resource roleAssignment 'Microsoft.Authorization/roleAssignments@2020-04-01-preview' = {
+  name: guid(resourceGroup().id, funcAppName, role.id)  
   scope:storageAccount
   properties: {
-    roleDefinitionId: storageBlobDataOwnerDefinition.id
+    roleDefinitionId: role.id
     principalId: functionAppProductionSlot.identity.principalId
     principalType: 'ServicePrincipal'
-  }
-  // dependsOn:[
-  //   storageAccount
-  //   functionAppProductionSlot
-  // ]
+  }  
 }
