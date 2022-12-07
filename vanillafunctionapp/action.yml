@@ -30,12 +30,12 @@ runs:
     - name: 'Login to Azure'
       uses: azure/login@v1
       with:
-        creds: ${{ secrets.credentials }}
+        creds: ${{ inputs.credentials }}
 
     - name: 'Create Resource Group'
       uses: Cheranga/GitHubActions/createresourcegroup@master
       with:
-        credentials: ${{ secrets.credentials }}
+        credentials: ${{ inputs.credentials }}
         name: ${{ inputs.resourceGroupName }}
         location: ${{ inputs.location }}      
 
