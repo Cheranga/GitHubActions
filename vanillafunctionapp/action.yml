@@ -2,9 +2,6 @@
 name: 'Deploy vanilla function app with related resources'
 description: 'Deploy vanilla function app with related resources'
 inputs:
-  credentials:
-    description: 'The credentials used to login to Azure'
-    required: true  
   deploymentName:
     description: 'The name of the deployment'
     required: true        
@@ -23,18 +20,23 @@ inputs:
   category:
     description: 'The category of the related resources. Allowed values are "nonprod" and "prod"'
     required: true    
+secrets:
+  credentials:
+    description: 'The credentials used to login to Azure'
+    required: true  
+
 runs:
   using: 'composite'
   steps:  
     - name: 'Login to Azure'
       uses: azure/login@v1
       with:
-        creds: ${{ inputs.credentials }}
+        creds: ${{ secrets.credentials }}
 
     - name: 'Create Resource Group'
       uses: Cheranga/GitHubActions/createresourcegroup@master
       with:
-        credentials: ${{ inputs.credentials }}
+        credentials: ${{ secrets.credentials }}
         name: ${{ inputs.resourceGroupName }}
         location: ${{ inputs.location }}      
 
