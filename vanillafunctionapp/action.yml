@@ -2,6 +2,9 @@
 name: 'Deploy vanilla function app with related resources'
 description: 'Deploy vanilla function app with related resources'
 inputs:
+  credentials:
+    description: 'The credentials used to login to Azure'
+    required: true  
   deploymentName:
     description: 'The name of the deployment'
     required: true        
@@ -19,11 +22,7 @@ inputs:
     required: true
   category:
     description: 'The category of the related resources. Allowed values are "nonprod" and "prod"'
-    required: true    
-secrets:
-  credentials:
-    description: 'The credentials used to login to Azure'
-    required: true  
+    required: true
 
 runs:
   using: 'composite'
