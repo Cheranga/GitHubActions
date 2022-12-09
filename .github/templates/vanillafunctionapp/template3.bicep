@@ -89,7 +89,7 @@ resource productionSlotAppSettings 'Microsoft.Web/sites/config@2021-02-01' = {
     APPINSIGHTS_INSTRUMENTATIONKEY: '@Microsoft.KeyVault(SecretUri=https://${keyVault.name}.vault.azure.net/secrets/appInsightsKey/)'
     FUNCTIONS_WORKER_RUNTIME: 'dotnet'
     WEBSITE_TIME_ZONE: timeZone
-    WEBSITE_ADD_SITENAME_BINDINGS_IN_APPHOST_CONFIG: 1
+    WEBSITE_ADD_SITENAME_BINDINGS_IN_APPHOST_CONFIG: '1'
   }
   dependsOn:[
     functionAppProductionSlot
