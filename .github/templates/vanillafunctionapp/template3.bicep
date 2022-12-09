@@ -28,15 +28,14 @@ var sanitizedFuncAppName = '${toLower(replace(funcAppName, '-', ''))}${envName}'
 var sanitizedStorageName = '${toLower(replace(sgName, '-', ''))}${envName}'
 var timeZone = 'AUS Eastern Standard Time'
 
-
 // Storage Account
 resource storageAccount 'Microsoft.Storage/storageAccounts@2021-02-01' = {
-  name: 'sg${sanitizedStorageName}'  
+  name: 'sg${sanitizedStorageName}'
   location: location
   kind: 'StorageV2'
   sku: {
-    name: storageSku[category]    
-  }  
+    name: storageSku[category]
+  }
 }
 
 // Application Insights
@@ -44,10 +43,10 @@ resource appIns 'Microsoft.Insights/components@2020-02-02' = {
   name: 'ins-${sanitizedFuncAppName}-${envName}'
   location: location
   kind: 'web'
-  properties:{
+  properties: {
     Application_Type: 'web'
-    Request_Source:'rest'
-    Flow_Type:'Bluefield'
+    Request_Source: 'rest'
+    Flow_Type: 'Bluefield'
   }
 }
 
@@ -55,9 +54,9 @@ resource appIns 'Microsoft.Insights/components@2020-02-02' = {
 resource asp 'Microsoft.Web/serverfarms@2021-02-01' = {
   name: 'plan-${sanitizedFuncAppName}'
   location: location
-  sku:{
-    name:planSku[category]
-    tier:planTier[category]
+  sku: {
+    name: planSku[category]
+    tier: planTier[category]
   }
 }
 
@@ -65,23 +64,23 @@ resource asp 'Microsoft.Web/serverfarms@2021-02-01' = {
 resource functionAppProductionSlot 'Microsoft.Web/sites@2021-03-01' = {
   name: sanitizedFuncAppName
   location: location
-  kind:'functionapp'
-  identity:{
-    type:'SystemAssigned'
-  }    
-  properties:{
-    serverFarmId:asp.name            
-  }   
-  dependsOn:[
+  kind: 'functionapp'
+  identity: {
+    type: 'SystemAssigned'
+  }
+  properties: {
+    serverFarmId: asp.name
+  }
+  dependsOn: [
     storageAccount
-  ] 
+  ]
 }
 
 // Function app settings
 resource productionSlotAppSettings 'Microsoft.Web/sites/config@2021-02-01' = {
   name: 'appsettings'
-  parent:functionAppProductionSlot
-  properties:{    
+  parent: functionAppProductionSlot
+  properties: {
     AzureWebJobsStorage__accountName: storageAccount.name
     WEBSITE_CONTENTAZUREFILECONNECTIONSTRING: '@Microsoft.KeyVault(SecretUri=https://${keyVault.name}.vault.azure.net/secrets/storageAccountConnectionString/)'
     WEBSITE_CONTENTSHARE: toLower(sanitizedFuncAppName)
@@ -91,9 +90,9 @@ resource productionSlotAppSettings 'Microsoft.Web/sites/config@2021-02-01' = {
     WEBSITE_TIME_ZONE: timeZone
     WEBSITE_ADD_SITENAME_BINDINGS_IN_APPHOST_CONFIG: '1'
   }
-  dependsOn:[
+  dependsOn: [
     functionAppProductionSlot
-  ]  
+  ]
 }
 
 // Keyvault with access policies to the function app
@@ -107,7 +106,7 @@ resource keyVault 'Microsoft.KeyVault/vaults@2021-06-01-preview' = {
     sku: {
       family: 'A'
       name: 'standard'
-    }    
+    }
     tenantId: subscription().tenantId
     accessPolicies: [
       {
@@ -119,61 +118,40 @@ resource keyVault 'Microsoft.KeyVault/vaults@2021-06-01-preview' = {
             'list'
           ]
         }
-      }      
-    ]  
-  }    
+      }
+    ]
+  }
 }
 
 // Keyvault secrets - storage account connection string
-resource storageAccountConnectionStringSecret 'Microsoft.KeyVault/vaults/secrets@2021-06-01-preview'={
+resource storageAccountConnectionStringSecret 'Microsoft.KeyVault/vaults/secrets@2021-06-01-preview' = {
   name: '${keyVault.name}/storageAccountConnectionString'
   properties: {
-    value:'DefaultEndpointsProtocol=https;AccountName=${storageAccount.name};EndpointSuffix=${environment().suffixes.storage};AccountKey=${listKeys(storageAccount.id, storageAccount.apiVersion).keys[0].value}'
-  }  
+    value: 'DefaultEndpointsProtocol=https;AccountName=${storageAccount.name};EndpointSuffix=${environment().suffixes.storage};AccountKey=${listKeys(storageAccount.id, storageAccount.apiVersion).keys[0].value}'
+  }
 }
 
 // Keyvault secrets - app insights key
-resource appInsightsKeySecret 'Microsoft.KeyVault/vaults/secrets@2021-06-01-preview'={
+resource appInsightsKeySecret 'Microsoft.KeyVault/vaults/secrets@2021-06-01-preview' = {
   name: '${keyVault.name}/appInsightsKey'
   properties: {
-    value:reference(appIns.id, appIns.apiVersion).InstrumentationKey
-  }  
+    value: reference(appIns.id, appIns.apiVersion).InstrumentationKey
+  }
 }
 
-// // Getting the `Storage BLOB Data Owner` role in AAD
-// resource storageBlobDataOwnerDefinition 'Microsoft.Authorization/roleDefinitions@2018-01-01-preview' existing = {
-//   scope: subscription()
-//   name: 'b7e6dc6d-f1e8-4753-8033-0f276bb0955b'  
-// }
-
-// // Assigning the `Storage BLOB Data Owner` role to the function app
-// resource storageBlobDataOwnerProductionAssignment 'Microsoft.Authorization/roleAssignments@2020-04-01-preview' = {
-//   name: guid(resourceGroup().id, 'productionSlot', storageBlobDataOwnerDefinition.id)
-//   scope:storageAccount
-//   properties: {
-//     roleDefinitionId: storageBlobDataOwnerDefinition.id
-//     principalId: functionAppProductionSlot.identity.principalId
-//     principalType: 'ServicePrincipal'
-//   }
-//   // dependsOn:[
-//   //   storageAccount
-//   //   functionAppProductionSlot
-//   // ]
-// }
-
+// Storage BLOB data owner role
 resource role 'Microsoft.Authorization/roleDefinitions@2018-01-01-preview' existing = {
   scope: subscription()
   name: 'b7e6dc6d-f1e8-4753-8033-0f276bb0955b'
 }
 
-
-
+// Assign storage BLOB data owner role to the function app
 resource roleAssignment 'Microsoft.Authorization/roleAssignments@2020-04-01-preview' = {
-  name: guid(resourceGroup().id, funcAppName, role.id)  
-  scope:storageAccount
+  name: guid(resourceGroup().id, funcAppName, role.id)
+  scope: storageAccount
   properties: {
     roleDefinitionId: role.id
     principalId: functionAppProductionSlot.identity.principalId
     principalType: 'ServicePrincipal'
-  }  
+  }
 }

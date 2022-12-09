@@ -17,6 +17,9 @@ inputs:
   functionAppName:
     description: 'The name of the function app'
     required: true
+  storageName:
+    description: 'The name of the storage account'
+    required: true
   location:
     description: 'The location where the function app will be deployed'
     required: true
@@ -36,7 +39,7 @@ runs:
       uses: Cheranga/GitHubActions/createresourcegroup@master
       with:
         credentials: ${{ inputs.credentials }}
-        name: ${{ inputs.resourceGroupName }}
+        name: ${{ inputs.resourceGroupName }}${{ inputs.environmentName }}
         location: ${{ inputs.location }}      
 
     - name: 'Checkout Actions Repository'
@@ -53,7 +56,7 @@ runs:
           template: ./.github/templates/vanillafunctionapp/template3.bicep
           parameters: >
              envName=${{ inputs.environmentName }}
-             funcAppName=${{ inputs.functionAppName }}
-             sgName=${{ inputs.functionAppName }}
+             funcAppName=${{ inputs.functionAppName }}             
+             sgName=${{ inputs.storageName }}
              location=${{ inputs.location }}
              category=${{ inputs.category }}           
