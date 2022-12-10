@@ -47,5 +47,5 @@ runs:
       uses: azure/webapps-deploy@v2
       with:
         app-name: ${{ inputs.functionAppName }}
-        package: "${{ env.PackagePath }}/funcapp"
+        package: ./published/funcapp
         # slot-name: Staging
