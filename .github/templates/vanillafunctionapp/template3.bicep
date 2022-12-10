@@ -24,13 +24,13 @@ var planTier = {
   prod: 'Dynamic'
 }
 
-var sanitizedFuncAppName = '${toLower(replace(funcAppName, '-', ''))}${envName}'
-var sanitizedStorageName = '${toLower(replace(sgName, '-', ''))}${envName}'
+// var sanitizedFuncAppName = '${toLower(replace(funcAppName, '-', ''))}${envName}'
+// var sanitizedStorageName = '${toLower(replace(sgName, '-', ''))}${envName}'
 var timeZone = 'AUS Eastern Standard Time'
 
 // Storage Account
 resource storageAccount 'Microsoft.Storage/storageAccounts@2021-02-01' = {
-  name: 'sg${sanitizedStorageName}'
+  name: sgName
   location: location
   kind: 'StorageV2'
   sku: {
@@ -40,7 +40,7 @@ resource storageAccount 'Microsoft.Storage/storageAccounts@2021-02-01' = {
 
 // Application Insights
 resource appIns 'Microsoft.Insights/components@2020-02-02' = {
-  name: 'ins-${sanitizedFuncAppName}-${envName}'
+  name: 'ins-${funcAppName}'
   location: location
   kind: 'web'
   properties: {
@@ -52,7 +52,7 @@ resource appIns 'Microsoft.Insights/components@2020-02-02' = {
 
 // App Service Plan
 resource asp 'Microsoft.Web/serverfarms@2021-02-01' = {
-  name: 'plan-${sanitizedFuncAppName}'
+  name: 'plan-${funcAppName}'
   location: location
   sku: {
     name: planSku[category]
@@ -62,7 +62,7 @@ resource asp 'Microsoft.Web/serverfarms@2021-02-01' = {
 
 // Function app without settings
 resource functionAppProductionSlot 'Microsoft.Web/sites@2021-03-01' = {
-  name: sanitizedFuncAppName
+  name: funcAppName
   location: location
   kind: 'functionapp'
   identity: {
@@ -83,21 +83,21 @@ resource productionSlotAppSettings 'Microsoft.Web/sites/config@2021-02-01' = {
   properties: {
     AzureWebJobsStorage__accountName: storageAccount.name
     WEBSITE_CONTENTAZUREFILECONNECTIONSTRING: '@Microsoft.KeyVault(SecretUri=https://${keyVault.name}.vault.azure.net/secrets/storageAccountConnectionString/)'
-    WEBSITE_CONTENTSHARE: toLower(sanitizedFuncAppName)
+    WEBSITE_CONTENTSHARE: toLower(funcAppName)
     FUNCTIONS_EXTENSION_VERSION: '~4'
     APPINSIGHTS_INSTRUMENTATIONKEY: '@Microsoft.KeyVault(SecretUri=https://${keyVault.name}.vault.azure.net/secrets/appInsightsKey/)'
     FUNCTIONS_WORKER_RUNTIME: 'dotnet'
     WEBSITE_TIME_ZONE: timeZone
     WEBSITE_ADD_SITENAME_BINDINGS_IN_APPHOST_CONFIG: '1'
   }
-  dependsOn: [
-    functionAppProductionSlot
-  ]
+  // dependsOn: [
+  //   functionAppProductionSlot
+  // ]
 }
 
 // Keyvault with access policies to the function app
 resource keyVault 'Microsoft.KeyVault/vaults@2021-06-01-preview' = {
-  name: 'kv-${sanitizedFuncAppName}'
+  name: 'kv-${funcAppName}'
   location: location
   properties: {
     enabledForDeployment: true

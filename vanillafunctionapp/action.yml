@@ -39,7 +39,7 @@ runs:
       uses: Cheranga/GitHubActions/createresourcegroup@master
       with:
         credentials: ${{ inputs.credentials }}
-        name: ${{ inputs.resourceGroupName }}${{ inputs.environmentName }}
+        name: ${{ inputs.resourceGroupName }}
         location: ${{ inputs.location }}      
 
     - name: 'Checkout Actions Repository'
@@ -52,7 +52,7 @@ runs:
       with:
           failOnStdErr: false
           deploymentName: ${{ inputs.deploymentName }}
-          resourceGroupName: ${{ inputs.resourceGroupName }}${{ inputs.environmentName }}
+          resourceGroupName: ${{ inputs.resourceGroupName }}
           template: ./.github/templates/vanillafunctionapp/template3.bicep
           parameters: >
              envName=${{ inputs.environmentName }}
