@@ -1,4 +1,3 @@
-param envName string
 param funcAppName string
 param sgName string
 param location string = resourceGroup().location
