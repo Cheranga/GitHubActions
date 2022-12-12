@@ -7,10 +7,7 @@ inputs:
     required: true  
   deploymentName:
     description: 'The name of the deployment'
-    required: true        
-  environmentName:
-    description: 'The name of the environment'
-    required: true    
+    required: true         
   resourceGroupName:
     description: 'The name of the resource group'
     required: true
@@ -55,7 +52,6 @@ runs:
           resourceGroupName: ${{ inputs.resourceGroupName }}
           template: ./.github/templates/vanillafunctionapp/template3.bicep
           parameters: >
-             envName=${{ inputs.environmentName }}
              funcAppName=${{ inputs.functionAppName }}             
              sgName=${{ inputs.storageName }}
              location=${{ inputs.location }}
