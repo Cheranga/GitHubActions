@@ -2,9 +2,6 @@
 name: 'Create Resource Group'
 description: 'Create the resource group if it does not exist'
 inputs:
-  credentials:
-    description: 'The credentials used to login to Azure'
-    required: true
   name:
     description: 'The name of the resource group'
     required: true
@@ -31,8 +28,3 @@ runs:
               az group create --name ${{ inputs.name }} --location ${{ inputs.location }}
               echo "Azure resource group created"
             fi
-    # - name: logout     
-    #   uses: Azure/CLI@v1
-    #   with:
-    #     inlineScript:
-    #       az logout
